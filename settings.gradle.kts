@@ -26,3 +26,5 @@
 
 // TODO: Rename the root project and add subprojects.
 rootProject.name = "dokka-tools"
+
+include("dokka-extensions")
