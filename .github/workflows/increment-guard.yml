@@ -1,0 +1,33 @@
+# Ensures that the current lib version is not yet published but executing the Gradle
+# `checkVersionIncrement` task.
+
+name: Check version increment
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: zulu
+          cache: gradle
+
+      - name: Pull config
+        run: git submodule update --init --recursive
+
+#     TODO: Re-enable this check after adding at least one Java subproject.
+#      For the Purposes of developing the `template`, this check is disabled. `template` does not
+#      observe any dependencies as it contains no code.
+
+#      - name: Check version is not yet published
+#        shell: bash
+#        run: ./gradlew checkVersionIncrement --stacktrace
