@@ -58,7 +58,6 @@ plugins {
 }
 
 apply(from = "version.gradle.kts")
-val spineCoreVersion: String by extra
 val spineBaseVersion: String by extra
 
 allprojects {
