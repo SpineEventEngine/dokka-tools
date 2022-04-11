@@ -70,7 +70,6 @@ plugins {
 apply(from = "version.gradle.kts")
 val spineCoreVersion: String by extra
 val spineBaseVersion: String by extra
-val spineTimeVersion: String by extra
 
 allprojects {
     apply {
@@ -168,8 +167,6 @@ subprojects {
                 force(
                     "io.spine:spine-base:$spineBaseVersion",
                     "io.spine:spine-testlib:$spineBaseVersion",
-                    "io.spine:spine-base:$spineBaseVersion",
-                    "io.spine:spine-time:$spineTimeVersion"
                 )
             }
         }
