@@ -1,14 +1,18 @@
-plugins {
-    kotlin("jvm") version "1.6.10"
-}
+import io.spine.internal.dependency.Dokka
 
-group = "io.spine.tools"
-version = "2.0.0-SNAPSHOT.1"
+plugins {
+    kotlin("jvm")
+}
 
 repositories {
     mavenCentral()
 }
 
+val spineBaseVersion: String by project
+
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation("io.spine:spine-base:${spineBaseVersion}")
+
+    compileOnly("org.jetbrains.dokka:dokka-core:${Dokka.version}")
+    implementation("org.jetbrains.dokka:dokka-base:${Dokka.version}")
 }
