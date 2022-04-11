@@ -19,14 +19,6 @@ jobs:
           # Check out the `config` submodule to fetch the required script file.
           submodules: true
 
-      - name: Print warning
-        run: echo "This workflow is diabled in 'SpineEventEngine/template'. Re-enable it after checking out the template."
-
-#        TODO: Re-enable this check after adding the `pom.xml` and `license-report.md`
-#         to the Git repository.
-#         For the Purposes of developing the `template`, this check is disabled. `template` does not
-#         observe any dependencies as it contains no code.
-
-#      - name: Check that `pom.xml` and `license-report.md` are modified
-#        shell: bash
-#        run: chmod +x ./config/scripts/ensure-reports-updated.sh && ./config/scripts/ensure-reports-updated.sh
+      - name: Check that `pom.xml` and `license-report.md` are modified
+        shell: bash
+        run: chmod +x ./config/scripts/ensure-reports-updated.sh && ./config/scripts/ensure-reports-updated.sh

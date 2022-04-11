@@ -32,7 +32,6 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
-import io.spine.internal.gradle.IncrementGuard
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
@@ -41,7 +40,9 @@ import io.spine.internal.gradle.javac.configureErrorProne
 import io.spine.internal.gradle.javac.configureJavac
 import io.spine.internal.gradle.kotlin.applyJvmToolchain
 import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
+import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.internal.gradle.publish.PublishingRepos
+import io.spine.internal.gradle.publish.PublishingRepos.gitHub
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.license.LicenseReporter
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -86,13 +87,12 @@ allprojects {
 }
 
 spinePublishing {
-    with(PublishingRepos) {
-        targetRepositories.addAll(
-            cloudRepo,
-            cloudArtifactRegistry
-        )
-    }
-    projectsToPublish.addAll(subprojects.map { it.path })
+    modules = subprojects.map { it.path }.toSet()
+    destinations = setOf(
+        PublishingRepos.cloudRepo,
+        PublishingRepos.cloudArtifactRegistry,
+        gitHub("dokka-tools")
+    )
 }
 
 subprojects {

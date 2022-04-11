@@ -24,22 +24,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Apply this script if it is needed to use test classes of the current project in other projects.
-// The dependency looks like this:
-//
-// testCompile project(path: ":projectWithTests", configuration: 'testArtifacts')
-//
+package io.spine.internal.dependency
 
-println("`test-artifacts.gradle` script is deprecated. " +
-        "Please use the `Project.exposeTestArtifacts()` utility instead.")
-
-configurations {
-    testArtifacts.extendsFrom testRuntime
-}
-task testJar(type: Jar) {
-    classifier "test"
-    from sourceSets.test.output
-}
-artifacts {
-    testArtifacts testJar
+/**
+ * Gradle TestKit extension for Google Truth.
+ *
+ * Source code:
+ * https://github.com/autonomousapps/dependency-analysis-android-gradle-plugin/tree/main/testkit-truth
+ *
+ * Usage description:
+ * https://dev.to/autonomousapps/gradle-all-the-way-down-testing-your-gradle-plugin-with-gradle-testkit-2hmc
+ */
+@Suppress("unused")
+object TestKitTruth {
+    private const val version = "1.1"
+    const val lib = "com.autonomousapps:testkit-truth:$version"
 }
