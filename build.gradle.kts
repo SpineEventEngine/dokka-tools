@@ -79,7 +79,7 @@ allprojects {
         apply(from = "$rootDir/version.gradle.kts")
     }
 
-    group = "io.spine.template"
+    group = "io.spine.tools"
     version = extra["versionToPublish"]!!
 
     repositories.applyStandard()
