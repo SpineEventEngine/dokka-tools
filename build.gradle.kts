@@ -45,25 +45,15 @@ import io.spine.internal.gradle.publish.PublishingRepos
 import io.spine.internal.gradle.publish.PublishingRepos.gitHub
 import io.spine.internal.gradle.publish.spinePublishing
 import io.spine.internal.gradle.report.license.LicenseReporter
+import io.spine.internal.gradle.testing.configureLogging
+import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-buildscript {
-    apply(from = "version.gradle.kts")
-
-    val mcJavaVersion: String by extra
-
-    io.spine.internal.gradle.doApplyStandard(repositories)
-
-    dependencies {
-        classpath("io.spine.tools:spine-mc-java:$mcJavaVersion")
-    }
-}
+import io.spine.internal.gradle.report.pom.PomGenerator
 
 plugins {
     `java-library`
     kotlin("jvm")
     idea
-    id("com.google.protobuf")
     id("net.ltgt.errorprone")
 }
 
@@ -98,10 +88,6 @@ subprojects {
     apply {
         plugin("java-library")
         plugin("kotlin")
-        plugin("com.google.protobuf")
-
-        plugin("io.spine.mc-java")
-
         plugin("maven-publish")
         plugin("net.ltgt.errorprone")
         plugin("jacoco")
@@ -114,35 +100,21 @@ subprojects {
     CheckStyleConfig.applyTo(project)
     LicenseReporter.generateReportIn(project)
 
-    tasks.withType<JavaCompile> {
-        configureJavac()
-    }
+    val javaVersion = JavaVersion.VERSION_11
 
-    val javaVersion = 11
     kotlin {
-        applyJvmToolchain(javaVersion)
+        applyJvmToolchain(javaVersion.toString())
         explicitApi()
     }
 
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+        kotlinOptions.jvmTarget = javaVersion.toString()
         setFreeCompilerArgs()
     }
 
     tasks.withType<JavaCompile> {
         configureJavac()
         configureErrorProne()
-    }
-
-    kotlin {
-        explicitApi()
-    }
-
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = javaVersion.toString()
-            freeCompilerArgs = listOf("-Xskip-prerelease-check")
-        }
     }
 
     dependencies {
@@ -154,26 +126,31 @@ subprojects {
 
         testImplementation(Guava.testLib)
         testImplementation(JUnit.runner)
-        testImplementation(JUnit.pioneer)
         JUnit.api.forEach { testImplementation(it) }
 
-        runtimeOnly(Flogger.Runtime.systemBackend)
         runtimeOnly(Flogger.Runtime.systemBackend)
     }
 
     configurations {
+        forceVersions()
+        excludeProtobufLite()
         all {
             resolutionStrategy {
                 force(
                     "io.spine:spine-base:$spineBaseVersion",
-                    "io.spine:spine-testlib:$spineBaseVersion",
+                    "io.spine.tools:spine-testlib:$spineBaseVersion"
                 )
             }
         }
     }
 
-    configurations.forceVersions()
-    configurations.excludeProtobufLite()
+    tasks {
+        registerTestTasks()
+    }
+
+    tasks.withType<Test> {
+        configureLogging()
+    }
 
     tasks.test {
         useJUnitPlatform {
@@ -182,7 +159,5 @@ subprojects {
     }
 }
 
-// TODO: Apply after adding at least one Java subpropject.
-// JavadocConfig.applyTo(project)
-// PomGenerator.applyTo(project)
-// LicenseReporter.mergeAllReports(project)
+PomGenerator.applyTo(project)
+LicenseReporter.mergeAllReports(project)
