@@ -24,10 +24,6 @@ jobs:
       - name: Pull config
         run: git submodule update --init --recursive
 
-#     TODO: Re-enable this check after adding at least one Java subproject.
-#      For the Purposes of developing the `template`, this check is disabled. `template` does not
-#      observe any dependencies as it contains no code.
-
-#      - name: Check version is not yet published
-#        shell: bash
-#        run: ./gradlew checkVersionIncrement --stacktrace
+      - name: Check version is not yet published
+        shell: bash
+        run: ./gradlew checkVersionIncrement --stacktrace

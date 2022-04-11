@@ -25,6 +25,4 @@
  */
 
 val spineBaseVersion: String by extra("2.0.0-SNAPSHOT.77")
-val mcJavaVersion: String by extra("2.0.0-SNAPSHOT.83")
-val spineCoreVersion: String by extra("2.0.0-SNAPSHOT.91")
-val versionToPublish: String by extra(spineCoreVersion)
+val versionToPublish: String by extra("2.0.0-SNAPSHOT.1")
