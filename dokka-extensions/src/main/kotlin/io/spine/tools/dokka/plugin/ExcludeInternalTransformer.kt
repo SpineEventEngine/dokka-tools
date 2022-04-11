@@ -86,8 +86,8 @@ class ExcludeInternalTransformer(dokkaContext: DokkaContext) :
         /**
          * Checks if provided object represents [Internal] annotation.
          *
-         * Compares the package and the class extracted from the provided object with the package
-         * and the class of the [Internal] annotation.
+         * Compares the package and the class extracted from the object with the package and the
+         * class of the [Internal] annotation.
          */
         fun test(a: Annotation): Boolean {
             return a.dri.packageName == c.`package`.name && a.dri.classNames == c.simpleName

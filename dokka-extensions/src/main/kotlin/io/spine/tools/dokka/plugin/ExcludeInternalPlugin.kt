@@ -32,7 +32,8 @@ import org.jetbrains.dokka.plugability.Extension
 import org.jetbrains.dokka.transformers.documentation.PreMergeDocumentableTransformer
 
 /**
- * Dokka plugin which excludes code annotated with [io.spine.annotation.Internal].
+ * Dokka plugin which excludes code annotated with [io.spine.annotation.Internal]. Works for
+ * types, methods and fields.
  *
  * There are several extensions points at different stages of generating documentation. The plugin
  * below injects the [ExcludeInternalTransformer] at the stage when the source code of a project is
@@ -58,7 +59,7 @@ class ExcludeInternalPlugin : DokkaPlugin() {
 
     /**
      * A transformer registered in Dokka's extension point to exclude [io.spine.annotation.Internal]
-     * before different source sets are merged.
+     * before [org.jetbrains.dokka.model.Documentable]s from different source sets are merged.
      */
     val excludeInternalTransformer: Extension<PreMergeDocumentableTransformer, *, *> by extending {
         dokkaBase.preMergeDocumentableTransformer providing ::ExcludeInternalTransformer
