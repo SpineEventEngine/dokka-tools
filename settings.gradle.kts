@@ -25,4 +25,4 @@
  */
 
 // TODO: Rename the root project and add subprojects.
-rootProject.name = "spine-template"
+rootProject.name = "dokka-tools"
