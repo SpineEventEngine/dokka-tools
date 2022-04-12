@@ -1,10 +1,10 @@
-#Dokka extensions
-##General
+# Dokka extensions
+## General
 
 The module contains custom Dokka plugins. The list of plugins can be found below:
 - `ExcludeInternalPlugin`
 
-##Usage
+## Usage
 
 Dokka discovers `org.jetbrains.dokka.plugability.DokkaPlugin` subclasses on its classpath during 
 setup using `java.util.ServiceLoader`. The way you use this module is provided below:
