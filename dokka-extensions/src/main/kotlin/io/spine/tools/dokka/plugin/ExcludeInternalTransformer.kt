@@ -37,7 +37,7 @@ import org.jetbrains.dokka.plugability.DokkaContext
 /**
  * Excludes everything annotated with [Internal] from the resulting documentation.
  *
- * Works for types, fields and methods.
+ * Works for packages, types, fields and methods.
  */
 class ExcludeInternalTransformer(dokkaContext: DokkaContext) :
     SuppressedByConditionDocumentableFilterTransformer(dokkaContext) {

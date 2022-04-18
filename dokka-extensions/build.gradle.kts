@@ -14,5 +14,5 @@ dependencies {
     implementation("io.spine:spine-base:${spineBaseVersion}")
 
     compileOnly("org.jetbrains.dokka:dokka-core:${Dokka.version}")
-    implementation("org.jetbrains.dokka:dokka-base:${Dokka.version}")
+    implementation(Dokka.BasePlugin.lib)
 }
