@@ -13,6 +13,6 @@ val spineBaseVersion: String by project
 dependencies {
     implementation("io.spine:spine-base:${spineBaseVersion}")
 
-    compileOnly("org.jetbrains.dokka:dokka-core:${Dokka.version}")
+    compileOnly(Dokka.CorePlugin.lib)
     implementation(Dokka.BasePlugin.lib)
 }

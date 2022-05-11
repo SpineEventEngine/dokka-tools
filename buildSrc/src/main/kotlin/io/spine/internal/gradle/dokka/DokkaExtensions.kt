@@ -24,25 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-:root,
-:root.theme-dark {
-    --color-dark: #007bff;
+package io.spine.internal.gradle.dokka
+
+import java.io.File
+import org.gradle.api.file.FileCollection
+import org.jetbrains.dokka.gradle.GradleDokkaSourceSetBuilder
+
+/**
+ * Returns only Java source roots out of all present in the source set.
+ *
+ * It is a helper method for generating documentation by Dokka only for Java code.
+ * It is helpful when both Java and Kotlin source files are present in a source set.
+ * Dokka can properly generate documentation for either Kotlin or Java depending on
+ * the configuration, but not both.
+ */
+internal fun GradleDokkaSourceSetBuilder.onlyJavaSources(): FileCollection {
+    return sourceRoots.filter(File::isJavaSourceDirectory)
 }
 
-:root.theme-dark dt {
-    color: #fff;
-}
-
-.library-name a::before {
-    background-image: url('https://spine.io/img/spine-sign-white.svg')
-}
-
-.cover a,
-.keyValue > div:first-child > .inline-flex > div:first-child > a {
-    font-family: var(--default-monospace-font-family);
-}
-
-.keyValue > div:first-child > .inline-flex > div:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
+private fun File.isJavaSourceDirectory(): Boolean {
+    return isDirectory && name == "java"
 }
