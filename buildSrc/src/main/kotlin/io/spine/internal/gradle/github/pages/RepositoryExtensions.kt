@@ -24,9 +24,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.internal.gradle.github.pages
+
+import io.spine.internal.gradle.RepoSlug
+import io.spine.internal.gradle.git.Branch
+import io.spine.internal.gradle.git.Repository
+import io.spine.internal.gradle.git.UserInfo
+
 /**
- * The version of this library for publishing.
+ * Clones the current project repository with the branch dedicated to publishing
+ * documentation to GitHub Pages checked out.
  *
- * For dependencies on Spine modules please see [io.spine.internal.dependency.Spine].
+ * The repository's GitHub SSH URL is derived from the `REPO_SLUG` environment
+ * variable. The [branch][Branch.documentation] dedicated to publishing documentation
+ * is automatically checked out in this repository. Also, the username and the email
+ * of the git user are automatically configured. The username is set
+ * to "UpdateGitHubPages Plugin", and the email is derived from
+ * the `FORMAL_GIT_HUB_PAGES_AUTHOR` environment variable.
+ *
+ * @throws org.gradle.api.GradleException if any of the environment variables described above
+ *         is not set.
  */
-val versionToPublish: String by extra("2.0.0-SNAPSHOT.5")
+internal fun Repository.Factory.forPublishingDocumentation(): Repository {
+    val host = RepoSlug.fromVar().gitHost()
+
+    val username = "UpdateGitHubPages Plugin"
+    val userEmail = AuthorEmail.fromVar().toString()
+    val user = UserInfo(username, userEmail)
+
+    val branch = Branch.documentation
+
+    return of(host, user, branch)
+}

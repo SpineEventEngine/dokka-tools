@@ -24,7 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO: Rename the root project and add subprojects.
 rootProject.name = "dokka-tools"
 
 include("dokka-extensions")

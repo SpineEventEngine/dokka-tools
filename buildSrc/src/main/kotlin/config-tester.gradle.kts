@@ -24,30 +24,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.internal.dependency
+import io.spine.internal.gradle.ConfigTester
+import io.spine.internal.gradle.SpineRepos
+import io.spine.internal.gradle.cleanFolder
+import java.nio.file.Path
+import java.nio.file.Paths
 
-// https://junit.org/junit5/
-@Suppress("unused")
-object JUnit {
-    const val version                    = "5.9.1"
-    private const val platformVersion    = "1.9.1"
-    private const val legacyVersion      = "4.13.1"
+// A reference to `config` to use along with the `ConfigTester`.
+val config: Path = Paths.get("./")
 
-    // https://github.com/apiguardian-team/apiguardian
-    private const val apiGuardianVersion = "1.1.2"
-    // https://github.com/junit-pioneer/junit-pioneer
-    private const val pioneerVersion     = "1.7.1"
+// A temp folder to use to check out the sources of other repositories with the `ConfigTester`.
+val tempFolder = File("./tmp")
 
-    const val legacy = "junit:junit:${legacyVersion}"
-    val api = listOf(
-        "org.apiguardian:apiguardian-api:${apiGuardianVersion}",
-        "org.junit.jupiter:junit-jupiter-api:${version}",
-        "org.junit.jupiter:junit-jupiter-params:${version}"
-    )
-    const val bom     = "org.junit:junit-bom:${version}"
-    const val runner  = "org.junit.jupiter:junit-jupiter-engine:${version}"
-    const val pioneer = "org.junit-pioneer:junit-pioneer:${pioneerVersion}"
-    const val platformCommons = "org.junit.platform:junit-platform-commons:${platformVersion}"
-    const val platformLauncher = "org.junit.platform:junit-platform-launcher:${platformVersion}"
-    const val params = "org.junit.jupiter:junit-jupiter-params:${version}"
+// Creates a Gradle task which checks out and builds the selected Spine repositories
+// with the local version of `config` and `config/buildSrc`.
+ConfigTester(config, tasks, tempFolder)
+    .addRepo(SpineRepos.baseTypes)  // Builds `base-types` at `master`.
+    .addRepo(SpineRepos.base)       // Builds `base` at `master`.
+    .addRepo(SpineRepos.coreJava)   // Builds `core-java` at `master`.
+
+    // This is how one builds a specific branch of some repository:
+    // .addRepo(SpineRepos.coreJava, Branch("grpc-concurrency-fixes"))
+
+    // Register the produced task under the selected name to invoke manually upon need.
+    .registerUnder("buildDependants")
+
+// Cleans the temp folder used to check out the sources from Git.
+tasks.register("clean") {
+    doLast {
+        cleanFolder(tempFolder)
+    }
 }

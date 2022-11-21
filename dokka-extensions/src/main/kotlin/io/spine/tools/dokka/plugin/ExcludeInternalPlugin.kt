@@ -54,14 +54,17 @@ import org.jetbrains.dokka.transformers.documentation.PreMergeDocumentableTransf
  * @see <a href="https://kotlin.github.io/dokka/1.6.10/developer_guide/extension_points/#pre-merge-documentation-transform">
  *     Pre-merge documentation transform</a>
  */
-class ExcludeInternalPlugin : DokkaPlugin() {
+@Suppress("RedundantVisibilityModifier") // It is required by explicit API mode.
+public class ExcludeInternalPlugin : DokkaPlugin() {
     private val dokkaBase by lazy { plugin<DokkaBase>() }
 
     /**
      * A transformer registered in Dokka's extension point to exclude [io.spine.annotation.Internal]
      * before [org.jetbrains.dokka.model.Documentable]s from different source sets are merged.
      */
-    val excludeInternalTransformer: Extension<PreMergeDocumentableTransformer, *, *> by extending {
-        dokkaBase.preMergeDocumentableTransformer providing ::ExcludeInternalTransformer
-    }
+    @Suppress("unused") // This delegated property has a desired side effect.
+    public val excludeInternalTransformer: Extension<PreMergeDocumentableTransformer, *, *>
+            by extending {
+                dokkaBase.preMergeDocumentableTransformer providing ::ExcludeInternalTransformer
+            }
 }
