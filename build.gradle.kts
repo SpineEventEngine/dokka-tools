@@ -52,6 +52,7 @@ plugins {
     `java-library`
     kotlin("jvm")
     errorprone
+    `gradle-doctor`
     idea
 }
 
