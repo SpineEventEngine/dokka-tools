@@ -39,7 +39,8 @@ import org.jetbrains.dokka.plugability.DokkaContext
  *
  * Works for packages, types, fields and methods.
  */
-class ExcludeInternalTransformer(dokkaContext: DokkaContext) :
+@Suppress("RedundantVisibilityModifier") // It is required by explicit API mode.
+public class ExcludeInternalTransformer(dokkaContext: DokkaContext) :
     SuppressedByConditionDocumentableFilterTransformer(dokkaContext) {
 
     /**
