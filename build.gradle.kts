@@ -30,7 +30,6 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
-import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -95,15 +94,15 @@ subprojects {
     CheckStyleConfig.applyTo(project)
     LicenseReporter.generateReportIn(project)
 
-    val javaVersion = JavaVersion.VERSION_11
+    val javaVersion = JavaVersion.VERSION_11.toString()
 
     kotlin {
-        applyJvmToolchain(javaVersion.toString())
+        applyJvmToolchain(javaVersion)
         explicitApi()
     }
 
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = javaVersion.toString()
+        kotlinOptions.jvmTarget = javaVersion
         setFreeCompilerArgs()
     }
 
@@ -129,15 +128,6 @@ subprojects {
     configurations {
         forceVersions()
         excludeProtobufLite()
-        val spine = Spine(project)
-        all {
-            resolutionStrategy {
-                force(
-                    spine.base,
-                    spine.testlib
-                )
-            }
-        }
     }
 
     tasks {
