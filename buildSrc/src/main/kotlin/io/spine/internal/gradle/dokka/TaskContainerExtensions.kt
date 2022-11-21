@@ -24,16 +24,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// TODO:2021-07-05:dmytro.dashenkov: https://github.com/SpineEventEngine/config/issues/214.
+package io.spine.internal.gradle.dokka
 
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            eachDependency {
-                if (requested.group == "org.jacoco") {
-                    useVersion("0.8.7")
-                }
-            }
-        }
-    }
-}
+import org.gradle.api.tasks.TaskContainer
+import org.jetbrains.dokka.gradle.DokkaTask
+
+/**
+ * Finds the `dokkaHtml` Gradle task.
+ */
+fun TaskContainer.dokkaHtmlTask() = this.getByName("dokkaHtml") as DokkaTask

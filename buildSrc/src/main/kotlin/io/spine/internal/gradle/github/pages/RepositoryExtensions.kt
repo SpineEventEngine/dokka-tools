@@ -26,31 +26,33 @@
 
 package io.spine.internal.gradle.github.pages
 
+import io.spine.internal.gradle.RepoSlug
+import io.spine.internal.gradle.git.Branch
+import io.spine.internal.gradle.git.Repository
+import io.spine.internal.gradle.git.UserInfo
+
 /**
- * An author of updates to GitHub pages.
+ * Clones the current project repository with the branch dedicated to publishing
+ * documentation to GitHub Pages checked out.
+ *
+ * The repository's GitHub SSH URL is derived from the `REPO_SLUG` environment
+ * variable. The [branch][Branch.documentation] dedicated to publishing documentation
+ * is automatically checked out in this repository. Also, the username and the email
+ * of the git user are automatically configured. The username is set
+ * to "UpdateGitHubPages Plugin", and the email is derived from
+ * the `FORMAL_GIT_HUB_PAGES_AUTHOR` environment variable.
+ *
+ * @throws org.gradle.api.GradleException if any of the environment variables described above
+ *         is not set.
  */
-class AuthorEmail(val value: String) {
+internal fun Repository.Factory.forPublishingDocumentation(): Repository {
+    val host = RepoSlug.fromVar().gitHost()
 
-    companion object {
+    val username = "UpdateGitHubPages Plugin"
+    val userEmail = AuthorEmail.fromVar().toString()
+    val user = UserInfo(username, userEmail)
 
-        /**
-         * The name of the environment variable that contains the email to use for authoring
-         * the commits to the GitHub Pages branch.
-         */
-        @Suppress("MemberVisibilityCanBePrivate") // for documentation purposes.
-        const val environmentVariable = "FORMAL_GIT_HUB_PAGES_AUTHOR"
+    val branch = Branch.documentation
 
-        /**
-         * Obtains the author from the system [environment variable][environmentVariable].
-         */
-        fun fromVar() : AuthorEmail {
-            val envValue = System.getenv(environmentVariable)
-            check(envValue != null && envValue.isNotBlank()) {
-                "Unable to obtain an author from `${environmentVariable}`."
-            }
-            return AuthorEmail(envValue)
-        }
-    }
-
-    override fun toString(): String = value
+    return of(host, user, branch)
 }
