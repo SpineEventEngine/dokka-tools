@@ -27,6 +27,10 @@
 import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.Spine
 
+plugins {
+    `detekt-code-analysis`
+}
+
 dependencies {
     val spine = Spine(project)
 
