@@ -24,15 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-@file:Suppress("RemoveRedundantQualifierName") // To prevent IDEA replacing FQN imports.
-
 import io.spine.internal.dependency.CheckerFramework
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.JavaX
-import io.spine.internal.gradle.applyStandard
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
 import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.forceVersions
@@ -49,29 +47,27 @@ import io.spine.internal.gradle.testing.configureLogging
 import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import io.spine.internal.gradle.report.pom.PomGenerator
+import io.spine.internal.gradle.standardToSpineSdk
 
 plugins {
     `java-library`
     kotlin("jvm")
+    errorprone
     idea
-    id("net.ltgt.errorprone")
 }
-
-apply(from = "version.gradle.kts")
-val spineBaseVersion: String by extra
 
 allprojects {
     apply {
         plugin("jacoco")
         plugin("idea")
         plugin("project-report")
-        apply(from = "$rootDir/version.gradle.kts")
+        from("$rootDir/version.gradle.kts")
     }
 
     group = "io.spine.tools"
     version = extra["versionToPublish"]!!
 
-    repositories.applyStandard()
+    repositories.standardToSpineSdk()
 }
 
 spinePublishing {
@@ -133,11 +129,12 @@ subprojects {
     configurations {
         forceVersions()
         excludeProtobufLite()
+        val spine = Spine(project)
         all {
             resolutionStrategy {
                 force(
-                    "io.spine:spine-base:$spineBaseVersion",
-                    "io.spine.tools:spine-testlib:$spineBaseVersion"
+                    spine.base,
+                    spine.testlib
                 )
             }
         }
@@ -145,15 +142,9 @@ subprojects {
 
     tasks {
         registerTestTasks()
-    }
-
-    tasks.withType<Test> {
-        configureLogging()
-    }
-
-    tasks.test {
-        useJUnitPlatform {
-            includeEngines("junit-jupiter")
+        withType<Test>().configureEach {
+            configureLogging()
+            useJUnitPlatform()
         }
     }
 }
