@@ -62,8 +62,9 @@ public class ExcludeInternalPlugin : DokkaPlugin() {
      * A transformer registered in Dokka's extension point to exclude [io.spine.annotation.Internal]
      * before [org.jetbrains.dokka.model.Documentable]s from different source sets are merged.
      */
-    @Suppress("unused") // This delegated property has an intentional side effect.
-    public val excludeInternalTransformer: Extension<PreMergeDocumentableTransformer, *, *> by extending {
-        dokkaBase.preMergeDocumentableTransformer providing ::ExcludeInternalTransformer
-    }
+    @Suppress("unused") // This delegated property has a desired side effect.
+    public val excludeInternalTransformer: Extension<PreMergeDocumentableTransformer, *, *>
+            by extending {
+                dokkaBase.preMergeDocumentableTransformer providing ::ExcludeInternalTransformer
+            }
 }
