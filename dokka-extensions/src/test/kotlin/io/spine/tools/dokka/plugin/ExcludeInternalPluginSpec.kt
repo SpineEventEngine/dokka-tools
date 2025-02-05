@@ -24,21 +24,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.dependency.build.Dokka
-import io.spine.dependency.local.Base
-import io.spine.dependency.local.TestLib
-import io.spine.dependency.test.JUnit
-import io.spine.dependency.test.Kotest
+package io.spine.tools.dokka.plugin
 
-plugins {
-    `detekt-code-analysis`
-}
+import java.util.*
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
+import io.kotest.matchers.shouldNotBe
 
-dependencies {
-    implementation(Base.lib)
-    implementation(Dokka.BasePlugin.lib)
+import org.jetbrains.dokka.plugability.DokkaPlugin
 
-    compileOnly(Dokka.CorePlugin.lib)
+@DisplayName("`ExcludeInternalPlugin` should")
+internal class ExcludeInternalPluginSpec {
 
-    testImplementation(Dokka.CorePlugin.lib)
+    @Test
+    fun `be loadable as a service`() {
+        val loader = ServiceLoader.load(DokkaPlugin::class.java)
+        loader.find { it is ExcludeInternalPlugin } shouldNotBe null
+    }
 }

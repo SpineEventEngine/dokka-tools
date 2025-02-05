@@ -28,8 +28,10 @@ import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
+import io.spine.dependency.lib.KotlinX
 import io.spine.dependency.local.Logging
 import io.spine.dependency.test.JUnit
+import io.spine.dependency.test.Kotest
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.javac.configureErrorProne
 import io.spine.gradle.javac.configureJavac
@@ -117,6 +119,7 @@ subprojects {
         ErrorProne.annotations.forEach { compileOnlyApi(it) }
 
         testImplementation(Guava.testLib)
+        testImplementation(Kotest.assertions)
         testImplementation(JUnit.runner)
         JUnit.api.forEach { testImplementation(it) }
     }
@@ -128,6 +131,8 @@ subprojects {
             resolutionStrategy {
                 force(
                     Logging.lib,
+                    KotlinX.Coroutines.core,
+                    KotlinX.Coroutines.jdk8,
                 )
             }
         }
