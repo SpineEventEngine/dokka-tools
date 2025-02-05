@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -37,9 +37,8 @@ import org.jetbrains.dokka.plugability.DokkaContext
 /**
  * Excludes everything annotated with [Internal] from the resulting documentation.
  *
- * Works for packages, types, fields and methods.
+ * Works for packages, types, fields, and methods.
  */
-@Suppress("RedundantVisibilityModifier") // It is required by explicit API mode.
 public class ExcludeInternalTransformer(dokkaContext: DokkaContext) :
     SuppressedByConditionDocumentableFilterTransformer(dokkaContext) {
 
@@ -64,8 +63,8 @@ public class ExcludeInternalTransformer(dokkaContext: DokkaContext) :
     /**
      * Extracts annotations from a [WithExtraProperties] object.
      *
-     * Information about annotations is found in the map-field `extra`, added when implementing
-     * [WithExtraProperties].
+     * Information about annotations is found in the map-field `extra`, added
+     * when implementing [WithExtraProperties].
      *
      * All values with the type of [Annotations], a container-class for all applied annotations,
      * are extracted from the map-field. Then plain lists of [Annotation] are extracted from

@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,29 +24,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.CheckerFramework
-import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.Guava
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.JavaX
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.forceVersions
-import io.spine.internal.gradle.javac.configureErrorProne
-import io.spine.internal.gradle.javac.configureJavac
-import io.spine.internal.gradle.kotlin.applyJvmToolchain
-import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import io.spine.internal.gradle.publish.IncrementGuard
-import io.spine.internal.gradle.publish.PublishingRepos
-import io.spine.internal.gradle.publish.PublishingRepos.gitHub
-import io.spine.internal.gradle.publish.spinePublishing
-import io.spine.internal.gradle.report.license.LicenseReporter
-import io.spine.internal.gradle.testing.configureLogging
-import io.spine.internal.gradle.testing.registerTestTasks
+import io.spine.dependency.build.CheckerFramework
+import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.lib.Guava
+import io.spine.dependency.lib.JavaX
+import io.spine.dependency.local.Logging
+import io.spine.dependency.test.JUnit
+import io.spine.gradle.checkstyle.CheckStyleConfig
+import io.spine.gradle.javac.configureErrorProne
+import io.spine.gradle.javac.configureJavac
+import io.spine.gradle.kotlin.applyJvmToolchain
+import io.spine.gradle.kotlin.setFreeCompilerArgs
+import io.spine.gradle.publish.IncrementGuard
+import io.spine.gradle.publish.PublishingRepos
+import io.spine.gradle.publish.PublishingRepos.gitHub
+import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.report.license.LicenseReporter
+import io.spine.gradle.report.pom.PomGenerator
+import io.spine.gradle.standardToSpineSdk
+import io.spine.gradle.testing.configureLogging
+import io.spine.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.standardToSpineSdk
 
 plugins {
     `java-library`
@@ -73,7 +71,6 @@ allprojects {
 spinePublishing {
     modules = subprojects.map { it.path }.toSet()
     destinations = setOf(
-        PublishingRepos.cloudRepo,
         PublishingRepos.cloudArtifactRegistry,
         gitHub("dokka-tools")
     )
@@ -123,12 +120,19 @@ subprojects {
         testImplementation(JUnit.runner)
         JUnit.api.forEach { testImplementation(it) }
 
-        runtimeOnly(Flogger.Runtime.systemBackend)
+        //runtimeOnly(Logging.systemBackend)
     }
 
     configurations {
         forceVersions()
         excludeProtobufLite()
+        all {
+            resolutionStrategy {
+                force(
+                    Logging.lib,
+                )
+            }
+        }
     }
 
     tasks {
