@@ -119,8 +119,6 @@ subprojects {
         testImplementation(Guava.testLib)
         testImplementation(JUnit.runner)
         JUnit.api.forEach { testImplementation(it) }
-
-        //runtimeOnly(Logging.systemBackend)
     }
 
     configurations {
