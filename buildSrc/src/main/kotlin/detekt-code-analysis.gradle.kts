@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -60,6 +60,7 @@ import io.gitlab.arturbosch.detekt.Detekt
  * }
  * ```
  */
+@Suppress("unused")
 private val about = ""
 
 plugins {
@@ -68,7 +69,7 @@ plugins {
 
 detekt {
     buildUponDefaultConfig = true
-    config = files("${rootDir}/config/quality/detekt-config.yml")
+    config.from(files("${rootDir}/config/quality/detekt-config.yml"))
 }
 
 tasks {

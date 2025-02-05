@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,20 +24,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+@file:OptIn(DokkaPluginApiPreview::class)
+
 package io.spine.tools.dokka.plugin
 
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.plugability.DokkaPlugin
+import org.jetbrains.dokka.plugability.DokkaPluginApiPreview
 import org.jetbrains.dokka.plugability.Extension
+import org.jetbrains.dokka.plugability.PluginApiPreviewAcknowledgement
 import org.jetbrains.dokka.transformers.documentation.PreMergeDocumentableTransformer
 
 /**
- * Dokka plugin which excludes code annotated with [io.spine.annotation.Internal]. Works for
- * packages, types, methods and fields.
+ * Dokka plugin which excludes code annotated with [io.spine.annotation.Internal].
+ * Works for packages, types, methods, and fields.
  *
- * There are several extensions points at different stages of generating documentation. The plugin
- * below injects the [ExcludeInternalTransformer] at the stage when the source code of a project is
- * already collected and translated to the Dokka internal representation
+ * There are several extensions points at different stages of generating documentation.
+ * The plugin injects the [ExcludeInternalTransformer] at the stage when the source code of
+ * a project is already collected and translated to the Dokka internal representation
  * [org.jetbrains.dokka.model.Documentable].
  *
  * Dokka looks for [DokkaPlugin] subclasses on its classpath during setup using
@@ -48,14 +52,14 @@ import org.jetbrains.dokka.transformers.documentation.PreMergeDocumentableTransf
  * }
  * ```
  *
- * @see <a href="https://kotlin.github.io/dokka/1.6.10/developer_guide/introduction/">
+ * @see <a href="https://kotlin.github.io/dokka/1.9.20/developer_guide/introduction/">
  *     Guide to Dokka Plugin development</a>
  *
- * @see <a href="https://kotlin.github.io/dokka/1.6.10/developer_guide/extension_points/#pre-merge-documentation-transform">
- *     Pre-merge documentation transform</a>
+ * @see <a href="https://kotlin.github.io/dokka/1.9.20/developer_guide/architecture/extension_points/core_extension_points/#documentablemerger">
+ *     DocumentableMerger</a>
  */
-@Suppress("RedundantVisibilityModifier") // It is required by explicit API mode.
 public class ExcludeInternalPlugin : DokkaPlugin() {
+
     private val dokkaBase by lazy { plugin<DokkaBase>() }
 
     /**
@@ -67,4 +71,8 @@ public class ExcludeInternalPlugin : DokkaPlugin() {
             by extending {
                 dokkaBase.preMergeDocumentableTransformer providing ::ExcludeInternalTransformer
             }
+
+    override fun pluginApiPreviewAcknowledgement(): PluginApiPreviewAcknowledgement {
+        return PluginApiPreviewAcknowledgement
+    }
 }

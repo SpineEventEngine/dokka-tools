@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.publish.SpinePublishing
+import io.spine.gradle.publish.SpinePublishing
 import java.nio.file.Files.createDirectories
 import java.nio.file.Files.createFile
 import java.text.SimpleDateFormat
@@ -91,7 +91,8 @@ val manifestAttributes = mapOf(
     "Build-OS" to buildOs(),
     IMPLEMENTATION_TITLE.toString() to implementationTitle(),
     IMPLEMENTATION_VERSION.toString() to project.version,
-    IMPLEMENTATION_VENDOR.toString() to "TeamDev"
+    IMPLEMENTATION_VENDOR.toString() to "TeamDev",
+    "Bundle-License" to "https://www.apache.org/licenses/LICENSE-2.0.txt"
 )
 
 /**
@@ -111,7 +112,7 @@ val exposeManifestForTests by tasks.creating {
         val manifest = Manifest()
 
         // The manifest version attribute is crucial for writing.
-        // It it's absent nothing would be written.
+        // If it's absent, nothing would be written.
         manifest.mainAttributes[MANIFEST_VERSION] = "1.0"
 
         manifestAttributes.forEach { entry ->
