@@ -26,9 +26,9 @@
 
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.lib.Coroutines
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
-import io.spine.dependency.lib.KotlinX
 import io.spine.dependency.local.Logging
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Kotest
@@ -46,7 +46,7 @@ import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     `java-library`
@@ -94,16 +94,13 @@ subprojects {
     CheckStyleConfig.applyTo(project)
     LicenseReporter.generateReportIn(project)
 
-    val javaVersion = JavaVersion.VERSION_11.toString()
-
     kotlin {
-        applyJvmToolchain(javaVersion)
+        compilerOptions {
+            jvmTarget.set(BuildSettings.jvmTarget)
+            setFreeCompilerArgs()
+        }
+        applyJvmToolchain(BuildSettings.javaVersion.asInt())
         explicitApi()
-    }
-
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = javaVersion
-        setFreeCompilerArgs()
     }
 
     tasks.withType<JavaCompile> {
@@ -131,8 +128,8 @@ subprojects {
             resolutionStrategy {
                 force(
                     Logging.lib,
-                    KotlinX.Coroutines.core,
-                    KotlinX.Coroutines.jdk8,
+                    Coroutines.core,
+                    Coroutines.jdk8,
                 )
             }
         }
