@@ -50,11 +50,6 @@ object AutoValue {
 
 // https://github.com/ZacSweers/auto-service-ksp
 object AutoServiceKsp {
-    /**
-     * The latest version compatible with Kotlin 1.8.22.
-     *
-     * @see io.spine.dependency.build.Ksp.version
-     */
-    private const val version = "1.1.0"
+    private const val version = "1.2.0"
     const val processor = "dev.zacsweers.autoservice:auto-service-ksp:$version"
 }

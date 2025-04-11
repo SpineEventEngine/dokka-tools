@@ -26,9 +26,6 @@
 
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.local.Base
-import io.spine.dependency.local.TestLib
-import io.spine.dependency.test.JUnit
-import io.spine.dependency.test.Kotest
 
 plugins {
     `detekt-code-analysis`

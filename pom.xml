@@ -26,19 +26,19 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-base</artifactId>
-    <version>2.0.0-SNAPSHOT.232</version>
+    <version>2.0.0-SNAPSHOT.307</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-base</artifactId>
-    <version>1.9.20</version>
+    <version>2.0.0</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
-    <artifactId>kotlin-stdlib-jdk8</artifactId>
-    <version>1.9.23</version>
+    <artifactId>kotlin-stdlib</artifactId>
+    <version>2.1.20</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -50,7 +50,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-assertions-core</artifactId>
-    <version>5.8.0</version>
+    <version>5.9.1</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -80,18 +80,18 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_annotations</artifactId>
-    <version>2.23.0</version>
+    <version>2.36.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_core</artifactId>
-    <version>2.23.0</version>
+    <version>2.36.0</version>
   </dependency>
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_type_annotations</artifactId>
-    <version>2.23.0</version>
+    <version>2.36.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -107,7 +107,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.gitlab.arturbosch.detekt</groupId>
     <artifactId>detekt-cli</artifactId>
-    <version>1.23.0</version>
+    <version>1.23.8</version>
   </dependency>
   <dependency>
     <groupId>javax.annotation</groupId>
@@ -129,33 +129,38 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.agent</artifactId>
-    <version>0.8.8</version>
+    <version>0.8.12</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>
     <artifactId>org.jacoco.ant</artifactId>
-    <version>0.8.8</version>
+    <version>0.8.12</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>dokka-core</artifactId>
-    <version>1.9.20</version>
+    <version>2.0.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
+    <artifactId>kotlin-build-tools-impl</artifactId>
+    <version>2.1.20</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-compiler-embeddable</artifactId>
-    <version>1.8.22</version>
+    <version>2.1.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-klib-commonizer-embeddable</artifactId>
-    <version>1.8.22</version>
+    <version>2.1.20</version>
   </dependency>
   <dependency>
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-scripting-compiler-embeddable</artifactId>
-    <version>1.8.22</version>
+    <version>2.1.20</version>
   </dependency>
 </dependencies>
 
