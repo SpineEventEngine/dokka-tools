@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ package io.spine.dependency.lib
 )
 object Protobuf {
     const val group = "com.google.protobuf"
-    const val version       = "3.25.1"
+    const val version = "4.36.0"
 
     /**
      * The Java library with Protobuf data types.
@@ -59,12 +59,12 @@ object Protobuf {
     // https://github.com/google/protobuf-gradle-plugin/releases
     object GradlePlugin {
         /**
-         * The version of this plugin is already specified in `buildSrc/build.gradle.kts` file.
-         * Thus, when applying the plugin to projects build files, only the [id] should be used.
+         * The version of this plugin is already specified in the `buildSrc/build.gradle.kts` file.
+         * Thus, when applying the plugin to project build files, only the [id] should be used.
          *
          * When changing the version, also change the version used in the `build.gradle.kts`.
          */
-        const val version = "0.9.4"
+        const val version = "0.10.0"
         const val id = "com.google.protobuf"
         const val lib = "$group:protobuf-gradle-plugin:$version"
     }

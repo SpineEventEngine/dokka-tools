@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 package io.spine.gradle.dart.task
 
+import io.spine.gradle.SpineTaskGroup
 import io.spine.gradle.TaskName
 import io.spine.gradle.base.assemble
 import io.spine.gradle.base.check
@@ -87,9 +88,9 @@ fun DartTasks.build(configuration: DartTasks.() -> Unit = {}) {
 private val resolveDependenciesName = TaskName.of("resolveDependencies", Exec::class)
 
 /**
- * Locates `resolveDependencies` task in this [TaskContainer].
+ * Locates the `resolveDependencies` task in this [TaskContainer].
  *
- * The task fetches dependencies declared via `pubspec.yaml` using `pub get` command.
+ * The task fetches dependencies declared via `pubspec.yaml` using the `pub get` command.
  */
 val TaskContainer.resolveDependencies: TaskProvider<Exec>
     get() = named(resolveDependenciesName)
@@ -98,7 +99,7 @@ private fun DartTasks.resolveDependencies(): TaskProvider<Exec> =
     register(resolveDependenciesName) {
 
         description = "Fetches dependencies declared via `pubspec.yaml`."
-        group = DartTasks.Group.build
+        group = SpineTaskGroup.name
 
         mustRunAfter(cleanPackageIndex)
 
@@ -111,12 +112,12 @@ private fun DartTasks.resolveDependencies(): TaskProvider<Exec> =
 private val cleanPackageIndexName = TaskName.of("cleanPackageIndex", Delete::class)
 
 /**
- * Locates `cleanPackageIndex` task in this [TaskContainer].
+ * Locates the `cleanPackageIndex` task in this [TaskContainer].
  *
  * The task deletes the resolved module dependencies' index.
  *
- * The standard configuration file that contains index is `package_config.json`. For backwards
- * compatability `pub` still updates the deprecated `.packages` file. The task deletes both files.
+ * The standard configuration file that contains the index is `package_config.json`. For backwards
+ * compatibility `pub` still updates the deprecated `.packages` file. The task deletes both files.
  */
 val TaskContainer.cleanPackageIndex: TaskProvider<Delete>
     get() = named(cleanPackageIndexName)
@@ -125,7 +126,7 @@ private fun DartTasks.cleanPackageIndex(): TaskProvider<Delete> =
     register(cleanPackageIndexName) {
 
         description = "Deletes the resolved `.packages` and `package_config.json` files."
-        group = DartTasks.Group.build
+        group = SpineTaskGroup.name
 
         delete(
             packageIndex,
@@ -136,7 +137,7 @@ private fun DartTasks.cleanPackageIndex(): TaskProvider<Delete> =
 private val testDartName = TaskName.of("testDart", Exec::class)
 
 /**
- * Locates `testDart` task in this [TaskContainer].
+ * Locates the `testDart` task in this [TaskContainer].
  *
  * The task runs Dart tests declared in the `./test` directory.
  */
@@ -147,7 +148,7 @@ private fun DartTasks.testDart(): TaskProvider<Exec> =
     register(testDartName) {
 
         description = "Runs Dart tests declared in the `./test` directory."
-        group = DartTasks.Group.build
+        group = SpineTaskGroup.name
 
         dependsOn(resolveDependencies)
 

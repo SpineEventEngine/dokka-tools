@@ -24,11 +24,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.ErrorProne
-import io.spine.dependency.lib.Coroutines
+import io.spine.dependency.kotlinx.Coroutines
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
+import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.local.Logging
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Kotest
@@ -43,7 +45,7 @@ import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
-import io.spine.gradle.standardToSpineSdk
+import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -72,6 +74,10 @@ allprojects {
 
 spinePublishing {
     modules = subprojects.map { it.path }.toSet()
+    // No prefix, as for the other tool artifacts. This renames the published
+    // coordinate to `io.spine.tools:dokka-extensions`; consumers reach it
+    // through `Dokka.SpineExtensions` in `config`.
+    toolArtifactPrefix = "NONE"
     destinations = setOf(
         PublishingRepos.cloudArtifactRegistry,
         gitHub("dokka-tools")
@@ -117,19 +123,33 @@ subprojects {
 
         testImplementation(Guava.testLib)
         testImplementation(Kotest.assertions)
-        testImplementation(JUnit.runner)
-        JUnit.api.forEach { testImplementation(it) }
+        testImplementation(JUnit.Jupiter.engine)
+        JUnit.Jupiter.modules.forEach { testImplementation(it) }
+        testRuntimeOnly(JUnit.Platform.launcher)
     }
+
+    apply<BomsPlugin>()
 
     configurations {
         forceVersions()
         excludeProtobufLite()
         all {
             resolutionStrategy {
+                // Dokka brings its own Kotlin runtime, older than the one
+                // this project compiles against, and `failOnVersionConflict()`
+                // cannot choose between them.
+                Kotlin.StdLib.forceArtifacts(project, this@all, this@resolutionStrategy)
                 force(
+                    Kotlin.bom,
+                    // Dokka requests an older coroutines line than the
+                    // refreshed baseline; the BOM itself is a graph node
+                    // that `failOnVersionConflict()` trips on.
+                    Coroutines.bom,
+                    Kotlin.run { artifact(reflect) },
                     Logging.lib,
-                    Coroutines.core,
-                    Coroutines.jdk8,
+                )
+                Coroutines.forceArtifacts(
+                    project, this@all, this@resolutionStrategy
                 )
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,11 @@
 
 package io.spine.gradle.github.pages
 
-import io.spine.gradle.RepoSlug
 import io.spine.gradle.git.Branch
 import io.spine.gradle.git.Repository
 import io.spine.gradle.git.UserInfo
+import io.spine.gradle.repo.RepoSlug
+import org.gradle.api.Project
 
 /**
  * Clones the current project repository with the branch dedicated to publishing
@@ -37,15 +38,18 @@ import io.spine.gradle.git.UserInfo
  *
  * The repository's GitHub SSH URL is derived from the `REPO_SLUG` environment
  * variable. The [branch][Branch.documentation] dedicated to publishing documentation
- * is automatically checked out in this repository. Also, the username and the email
- * of the git user are automatically configured. The username is set
- * to "UpdateGitHubPages Plugin", and the email is derived from
+ * is automatically checked out in this repository, and created if it does not exist
+ * yet. A freshly created branch is seeded with a `CNAME` file so that GitHub Pages
+ * serves the documentation under the `spine.io` custom domain. Also, the username
+ * and the email of the git user are automatically configured.
+ *
+ * The username is set to `"UpdateGitHubPages Plugin"`, and the email is derived from
  * the `FORMAL_GIT_HUB_PAGES_AUTHOR` environment variable.
  *
  * @throws org.gradle.api.GradleException if any of the environment variables described above
  *         is not set.
  */
-internal fun Repository.Factory.forPublishingDocumentation(): Repository {
+internal fun Repository.Factory.forPublishingDocumentation(project: Project): Repository {
     val host = RepoSlug.fromVar().gitHost()
 
     val username = "UpdateGitHubPages Plugin"
@@ -54,5 +58,10 @@ internal fun Repository.Factory.forPublishingDocumentation(): Repository {
 
     val branch = Branch.documentation
 
-    return of(host, user, branch)
+    // When the `gh-pages` branch is created from scratch, seed it with a `CNAME`
+    // file so that GitHub Pages serves the documentation under the `spine.io`
+    // custom domain.
+    val initialFiles = mapOf("CNAME" to "spine.io\n")
+
+    return clone(project, host, user, branch, initialFiles)
 }

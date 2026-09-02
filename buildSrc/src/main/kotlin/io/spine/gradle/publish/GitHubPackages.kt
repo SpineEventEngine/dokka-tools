@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@
 
 package io.spine.gradle.publish
 
-import io.spine.gradle.Credentials
-import io.spine.gradle.Repository
+import io.spine.gradle.repo.Credentials
+import io.spine.gradle.repo.Repository
 import io.spine.gradle.buildDirectory
 import net.lingala.zip4j.ZipFile
 import org.gradle.api.Project
@@ -42,12 +42,12 @@ internal object GitHubPackages {
      */
     fun repository(repoName: String): Repository {
         val githubActor: String = actor()
+        val url = "https://maven.pkg.github.com/SpineEventEngine/$repoName"
         return Repository(
-            name = "GitHub Packages",
-            releases = "https://maven.pkg.github.com/SpineEventEngine/$repoName",
-            snapshots = "https://maven.pkg.github.com/SpineEventEngine/$repoName",
-            credentialValues = { project -> project.credentialsWithToken(githubActor) }
-        )
+            name = "GitHub-Packages",
+            releases = url,
+            snapshots = url
+        ) { project -> project.credentialsWithToken(githubActor) }
     }
 
     private fun actor(): String {
@@ -82,12 +82,12 @@ private fun Project.readGitHubToken(): String {
 }
 
 /**
- * Read the personal access token for the `developers@spine.io` account which
- * has only the permission to read public GitHub packages.
+ * Reads the personal access token for the `developers@spine.io` account.
+ * The token grants only read access to public GitHub packages.
  *
  * The token is extracted from the archive called `aus.weis` stored under `buildSrc`.
  * The archive has such an unusual name to avoid scanning for tokens placed in repositories
- * which is performed by GitHub. Since we do not violate any security, it is OK to
+ * that is performed by GitHub. Since we do not violate any security, it is OK to
  * use such a workaround.
  */
 private fun Project.readTokenFromArchive(): String {

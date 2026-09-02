@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,10 +39,10 @@ import org.gradle.api.tasks.TaskContainer
  * A tool to execute the Gradle `build` task in selected Git repositories
  * with the local version of [config] contents.
  *
- * Checks out the content of selected repositories into the specified [tempFolder]. The folder
- * is created if it does not exist. By default, uses `./tmp` as a temp folder.
+ * Checks out the content of selected repositories into the specified [tempFolder].
+ * The folder is created if it does not exist. By default, uses `./tmp` as a temp folder.
  *
- * Replaces the `config` and `buildSrc` folders in the checked out repository by the local versions
+ * Replaces the `config` and `buildSrc` folders in the checked-out repository by the local versions
  * of code. If the repository-under-test already contains its own `buildSrc` or `config` folders,
  * they are NOT overwritten, but rather renamed into `buildSrc-original` and `config-original`
  * accordingly. This allows further tracing if the build fails.
@@ -87,7 +87,7 @@ class ConfigTester(
     }
 
     /**
-     * Adds a test
+     * Adds a test.
      */
     fun addRepo(repo: URI, branch: Branch): ConfigTester {
         repos.add(GitRepository(repo, branch))
@@ -98,6 +98,8 @@ class ConfigTester(
         val tasksPerRepo = repos.map { testWithConfig(it) }
 
         tasks.register(taskName) {
+            group = SpineTaskGroup.name
+            description = "Builds every configured downstream repository against this `config`"
             for (repoTaskName in tasksPerRepo) {
                 dependsOn(repoTaskName)
             }
@@ -119,6 +121,8 @@ class ConfigTester(
         runGradleName: String
     ) {
         tasks.register(executeBuildName) {
+            group = SpineTaskGroup.name
+            description = "Checks out `${gitRepo.name}` and overlays local `config` and `buildSrc`"
             doLast {
                 println(" *** Testing `config` and `config/buildSrc` with `${gitRepo.name}`. ***")
                 val ignoredFolder = tempFolder.toPath()
@@ -134,6 +138,8 @@ class ConfigTester(
         gitRepo: GitRepository,
     ) {
         tasks.register(runGradleName, RunBuild::class.java) {
+            group = SpineTaskGroup.name
+            description = "Runs the Gradle build of `${gitRepo.name}` against the local `config`"
             doFirst {
                 println("`${gitRepo.name}`: starting Gradle build...")
             }
@@ -195,7 +201,7 @@ class GitRepository(
      * to the specified [destinationFolder].
      *
      * The source code is put to the sub-folder named after the repository.
-     * E.g. for `https://github.com/acme-org/foobar` the code is placed under
+     * E.g., for `https://github.com/acme-org/foobar` the code is placed under
      * the `destinationFolder/foobar` folder.
      *
      * If the supplied folder does not exist, it is created.
@@ -244,7 +250,7 @@ class GitRepository(
 class ClonedRepo(
 
     /**
-     * Origin Git repository which is cloned.
+     * Origin Git repository that is cloned.
      */
     private val repo: GitRepository,
 
@@ -263,7 +269,7 @@ class ClonedRepo(
      * The original `buildSrc` folder, if it exists in this cloned repo, is renamed
      * to `buildSrc-original`.
      *
-     * Optionally, takes an [ignoredFolder] which will be excluded from the [source] paths
+     * Optionally, takes an [ignoredFolder] that will be excluded from the [source] paths
      * when copying.
      *
      *
@@ -283,7 +289,7 @@ class ClonedRepo(
      * The original `config` folder, if it exists in this cloned repo, is renamed
      * to `config-original`.
      *
-     * Optionally, takes an [ignoredFolder] which will be excluded from the [source] paths
+     * Optionally, takes an [ignoredFolder] that will be excluded from the [source] paths
      * when copying.
      *
      * Returns this instance of `ClonedRepo`, for call chaining.
@@ -350,7 +356,7 @@ object SpineRepos {
 
     val base: URI = library("base")
     val baseTypes: URI = library("base-types")
-    val coreJava: URI = library("core-java")
+    val coreJvm: URI = library("core-jvm")
     val web: URI = library("web")
 
     private fun library(repo: String) = URI(libsOrg + repo)

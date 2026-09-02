@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,17 +31,23 @@ import io.spine.gradle.report.pom.PomFormatting.writeStart
 import java.io.File
 import java.io.FileWriter
 import java.io.StringWriter
+import org.gradle.api.Project
 
 /**
  * Writes the dependencies of a Gradle project and its subprojects as a `pom.xml` file.
  *
- * The resulting file is not usable for `maven` build tasks, but serves rather as a description
- * of the first-level dependencies for each project/subproject. Their transitive dependencies
- * are not included into the result.
+ * The resulting file is not usable for `maven` build tasks but serves as a description
+ * of the first-level dependencies for each project or subproject.
+ * Their transitive dependencies are not included in the result.
+ *
+ * The version of each dependency is taken from the map returned by
+ * [resolvedVersionsOf] for the project the dependency comes from.
+ * See the [dependencies] extension function for details.
  */
 internal class PomXmlWriter
 internal constructor(
-    private val projectMetadata: ProjectMetadata
+    private val projectMetadata: ProjectMetadata,
+    private val resolvedVersionsOf: (Project) -> Map<String, String>
 ) {
 
     /**
@@ -51,12 +57,10 @@ internal constructor(
      * <p>If a file with the specified location exists, its contents will be substituted
      * with a new `pom.xml`.
      *
-     * @param file a file to write `pom.xml` contents to
+     * @param file a file to write `pom.xml` contents to.
      */
     fun writeTo(file: File) {
-        val fileWriter = FileWriter(file)
         val out = StringWriter()
-
         writeStart(out)
         writeBlocks(
             out,
@@ -67,20 +71,20 @@ internal constructor(
         )
         PomFormatting.writeEnd(out)
 
-        fileWriter.write(out.toString())
-        fileWriter.close()
+        FileWriter(file).use {
+            it.write(out.toString())
+        }
     }
 
     /**
      * Obtains a string that contains project dependencies as XML.
      *
-     * <p>Obtained string also contains a closing project tag.
+     * <p>The obtained string also contains a closing project tag.
      */
     private fun projectDependencies(): String {
         val destination = StringWriter()
-        val dependencyWriter = DependencyWriter.of(projectMetadata.project)
+        val dependencyWriter = DependencyWriter.of(projectMetadata.project, resolvedVersionsOf)
         dependencyWriter.writeXmlTo(destination)
         return destination.toString()
     }
 }
-

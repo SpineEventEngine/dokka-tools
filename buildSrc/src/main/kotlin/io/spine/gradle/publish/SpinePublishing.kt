@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@
 
 package io.spine.gradle.publish
 
-import dokkaJavaJar
-import dokkaKotlinJar
-import io.spine.gradle.Repository
+import io.spine.dependency.local.Spine
+import io.spine.gradle.repo.Repository
+import java.util.Locale
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.kotlin.dsl.apply
@@ -44,94 +44,135 @@ import org.gradle.kotlin.dsl.findByType
  *
  * The extension can be configured for single- and multi-module projects.
  *
+ * ## Using in a multi-module project
+ *
  * When used with a multi-module project, the extension should be opened in a root project's
  * build file. The published modules are specified explicitly by their names:
  *
- * ```
+ * ```kotlin
  * spinePublishing {
  *     modules = setOf(
  *         "subprojectA",
  *         "subprojectB",
  *     )
- *     destinations = setOf(
- *         PublishingRepos.cloudRepo,
- *         PublishingRepos.cloudArtifactRegistry,
- *     )
+ *     destinations = PublishingRepos.run { setOf(
+ *         cloudArtifactRegistry,
+ *         gitHub("<ProjectRepo>")  // The name of the GitHub repository of the project.
+ *     )}
  * }
  * ```
+ *
+ * ### Filtering out test-only modules
+ *
+ * Sometimes a functional or an integration test requires a significant amount of
+ * configuration code that is better understood when isolated into a separate module.
+ * Conventionally, we use the `-tests` suffix for naming such modules.
+ *
+ * In order to avoid publishing of such a test-only module, we use the following extensions
+ * for the Gradle [Project] class: [productionModules], [productionModuleNames].
+ * So the above code for specifying the modules to publish could be rewritten as follows:
+ *
+ * ```kotlin
+ * spinePublishing {
+ *     modules = productionModuleNames.toSet()
+ * }
+ * ```
+ * This code works for most of the projects.
+ *
+ * ### Arranging custom publishing for a module
+ * ```kotlin
+ *
+ * 1. Modify the list of standardly published modules in the root project like this:
+ *
+ * ```kotlin
+ * spinePublishing {
+ *     modules = productionModuleNames
+ *       .minus("my-custom-module")
+ *       .toSet()
+ *
+ *     modulesWithCustomPublishing = setOf(
+ *         "my-custom-module"
+ *     )
+ *
+ *     // ...
+ * }
+ * ```
+ * 2. Arrange the custom publishing in the `my-custom-module` project.
+ *
+ * ## Using in a single-module project
  *
  * When used with a single-module project, the extension should be opened in a project's build file.
  * Only destinations should be specified:
  *
- * ```
+ * ```kotlin
  * spinePublishing {
- *     destinations = setOf(
- *         PublishingRepos.cloudRepo,
- *         PublishingRepos.cloudArtifactRegistry,
- *     )
+ *     destinations = PublishingRepos.run { setOf(
+ *         cloudArtifactRegistry,
+ *         gitHub("<ProjectRepo>")
+ *     )}
  * }
  * ```
  *
- * It is worth to mention, that publishing of a module can be configured only from a single place.
+ * ## Publishing modules
+ *
+ * It is worth mentioning that publishing of a module can be configured only from a single place.
  * For example, declaring `subprojectA` as published in a root project and opening
  * `spinePublishing` extension within `subprojectA` itself would lead to an exception.
  *
- * In Gradle, in order to publish something somewhere one should create a publication. In each
- * of published modules, the extension will create a [publication][StandardJavaPublicationHandler]
- * named "mavenJava". All artifacts, published by this extension belong to this publication.
+ * In Gradle, in order to publish something somewhere, one should create a publication. In each
+ * of the published modules, the extension will create a [publication][StandardJavaPublicationHandler]
+ * named "mavenJava". All artifacts published by this extension belong to this publication.
  *
- * By default, along with the compilation output of "main" source set, the extension publishes
+ * ## Published artifacts
+ *
+ * By default, along with the compilation output of the `main` source set, the extension publishes
  * the following artifacts:
  *
- * 1. [sourcesJar] – sources from "main" source set. Includes "hand-made" Java,
- *    Kotlin and Proto files. In order to include the generated code into this artifact, a module
- *    should specify those files as a part of "main" source set.
+ * 1. [sourcesJar] — sources from the `main` source set. Includes handcrafted and generated
+ *    code in Java, Kotlin, and `.proto` files.
  *
- *    Here's an example of how to do that:
+ * 2. [protoJar] – only `.proto` sources from the `main` source set. It is published only if
+ *   Proto files are actually present in the source set.
  *
- *    ```
- *    sourceSets {
- *        val generatedDir by extra("$projectDir/generated")
- *        val generatedSpineDir by extra("$generatedDir/main/java")
- *        main {
- *            java.srcDir(generatedSpineDir)
- *        }
- *    }
- *    ```
- * 2. [protoJar] – only Proto sources from "main" source set. It's published only if
- *   Proto files are actually present in the source set. Publication of this artifact is optional
- *   and can be disabled via [SpinePublishing.protoJar].
- * 3. [javadocJar] - javadoc, generated upon Java sources from "main" source set.
- *   If javadoc for Kotlin is also needed, apply Dokka plugin. It tunes `javadoc` task to generate
- *   docs upon Kotlin sources as well.
- * 4. [dokkaKotlinJar] - documentation generated by Dokka for Kotlin and Java sources
+ * 3. [javadocJar] — Javadoc, generated upon Java sources from the `main` source set.
+ *   If Javadoc for Kotlin is also needed, apply the Dokka plugin.
+ *   It tunes the `javadoc` task to generate docs upon Kotlin sources as well.
+ *
+ * 4. [htmlDocsJar] — documentation generated by Dokka for Kotlin and Java sources
  *   using the Kotlin API mode.
- * 5. [dokkaJavaJar] - documentation generated by Dokka for Kotlin and Java sources
- *  *   using the Java API mode.
  *
  * Additionally, [testJar] artifact can be published. This artifact contains compilation output
- * of "test" source set. Use [SpinePublishing.testJar] to enable its publishing.
+ * of the `test` source set. Use [SpinePublishing.testJar] to enable its publishing.
  *
  * @see [artifacts]
+ * @see SpinePublishing
  */
-fun Project.spinePublishing(block: SpinePublishing.() -> Unit) {
+fun Project.spinePublishing(block: SpinePublishing.() -> Unit): SpinePublishing {
     apply<MavenPublishPlugin>()
-    val name = SpinePublishing::class.java.simpleName
     val extension = with(extensions) {
-        findByType<SpinePublishing>() ?: create(name, project)
+        findByType<SpinePublishing>() ?: create(SpinePublishing.extensionName, project)
     }
     extension.run {
         block()
         configured()
     }
+    return extension
 }
 
 /**
- * A Gradle extension for setting up publishing of spine modules using `maven-publish` plugin.
+ * A Gradle extension for setting up publishing of modules of Spine SDK modules
+ * using `maven-publish` plugin.
  *
- * @param project
- *         a project in which the extension is opened. By default, this project will be
- *         published as long as a [set][modules] of modules to publish is not specified explicitly.
+ * ### Implementation Note
+ *
+ * This extension is overloaded with responsibilities.
+ * It basically does what an extension AND a Gradle plugin would normally do.
+ *
+ * We [should introduce a plugin class](https://github.com/SpineEventEngine/config/issues/562)
+ * and move the code related to creating tasks or setting dependencies between them into the plugin.
+ *
+ * @param project The project in which the extension is opened. By default, this project will be
+ *   published as long as a [set][modules] of modules to publish is not specified explicitly.
  *
  * @see spinePublishing
  */
@@ -143,11 +184,21 @@ open class SpinePublishing(private val project: Project) {
          * The default prefix added before a module name when publishing artifacts.
          */
         const val DEFAULT_PREFIX = "spine-"
+
+        /**
+         * The reserved value that means that no prefix should be added
+         * to a tool module's artifact ID.
+         */
+        const val NONE_PREFIX = "NONE"
+
+        /**
+         * The name of the extension registered in a Gradle project.
+         */
+        public val extensionName: String = SpinePublishing::class.java.simpleName
+            .replaceFirstChar { it.lowercase(Locale.ROOT) }
     }
 
-    private val protoJar = ProtoJar()
     private val testJar = TestJar()
-    private val dokkaJar = DokkaJar()
 
     /**
      * Set of modules to be published.
@@ -163,18 +214,27 @@ open class SpinePublishing(private val project: Project) {
     var modules: Set<String> = emptySet()
 
     /**
-     * Controls whether the published module needs standard publications.
-     *
-     * If `true`, the module should configure publications on its own.
-     * Otherwise, the extension will configure standard [ones][StandardJavaPublicationHandler].
-     *
-     * This property is analogue of [modulesWithCustomPublishing] for projects,
-     * for which [spinePublishing] is configured individually.
-     *
-     * Setting of this property and having a non-empty [modules] will lead
-     * to an exception.
+     * Controls whether the [module][project] needs standard publications.
      *
      * Default value is `false`.
+     *
+     * In a single module [project], settings this property to `true` it tells
+     * that the project configures the publication in a specific way and
+     * [CustomPublicationHandler] should be used.
+     * Otherwise, the extension will configure the
+     * [standard publication][StandardJavaPublicationHandler].
+     *
+     * This property is an analogue of [modulesWithCustomPublishing] in
+     * [multi-module][Project.getSubprojects] projects,
+     * for which [spinePublishing] is configured individually.
+     *
+     * Setting of this property to `true` and having a non-empty [modules] property
+     * in the project to which the extension is applied will lead to [IllegalStateException].
+     *
+     * Settings this property to `true` in a subproject serves only the documentation purposes.
+     * This subproject still must be listed in the [modulesWithCustomPublishing] property in
+     * the extension of the [rootProject][Project.getRootProject], so that its publication
+     * can be configured in a specific way.
      */
     var customPublishing = false
 
@@ -191,61 +251,35 @@ open class SpinePublishing(private val project: Project) {
      * Usually, Spine-related projects are published to one or more repositories,
      * declared in [PublishingRepos]:
      *
-     * ```
-     * destinations = setOf(
-     *     PublishingRepos.cloudRepo,
-     *     PublishingRepos.cloudArtifactRegistry,
-     *     PublishingRepos.gitHub("base"),
-     * )
+     * ```kotlin
+     * destinations = PublishingRepos.run { setOf(
+     *      cloudArtifactRegistry,
+     *      gitHub("<ProjectRepo>") // The name of the GitHub repository of the project.
+     * )}
      * ```
      *
-     * Empty by default.
+     * If the property is not initialized, the destinations will be taken from
+     * the parent project.
      */
-    var destinations: Set<Repository> = emptySet()
+    lateinit var destinations: Set<Repository>
 
     /**
-     * A prefix to be added before the name of each artifact.
+     * A prefix to be added before the name of each artifact, if it does not belong
+     * to the Maven group `"io.spine.tools"`.
+     *
+     * @see toolArtifactPrefix
      */
     var artifactPrefix: String = DEFAULT_PREFIX
 
     /**
-     * Allows disabling publishing of [protoJar] artifact, containing all Proto sources
-     * from `sourceSets.main.proto`.
+     * A prefix to be added before a module name if it belongs to
+     * the Maven group `"io.spine.tools"`.
      *
-     * Here's an example of how to disable it for some of the published modules:
+     * Use `"NONE"` if you need no prefix before tool module names.
      *
-     * ```
-     * spinePublishing {
-     *     modules = setOf(
-     *         "subprojectA",
-     *         "subprojectB",
-     *     )
-     *     protoJar {
-     *         exclusions = setOf(
-     *             "subprojectB",
-     *         )
-     *     }
-     * }
-     * ```
-     *
-     * For all modules, or when the extension is configured within a published module itself:
-     *
-     * ```
-     * spinePublishing {
-     *     protoJar {
-     *         disabled = true
-     *     }
-     * }
-     * ```
-     *
-     * The resulting artifact is available under "proto" classifier.
-     * For example, in Gradle 7+, one could depend on it like this:
-     *
-     * ```
-     * implementation("io.spine:spine-client:$version@proto")
-     * ```
+     * @see artifactPrefix
      */
-    fun protoJar(block: ProtoJar.() -> Unit) = protoJar.run(block)
+    var toolArtifactPrefix: String = ""
 
     /**
      * Allows enabling publishing of [testJar] artifact, containing compilation output
@@ -277,8 +311,8 @@ open class SpinePublishing(private val project: Project) {
      * }
      * ```
      *
-     * The resulting artifact is available under "test" classifier. For example,
-     * in Gradle 7+, one could depend on it like this:
+     * The resulting artifact is available under the "test" classifier.
+     * For example, in Gradle 7+, one could depend on it like this:
      *
      * ```
      * implementation("io.spine:spine-client:$version@test")
@@ -287,48 +321,19 @@ open class SpinePublishing(private val project: Project) {
     fun testJar(block: TestJar.() -> Unit)  = testJar.run(block)
 
     /**
-     * Configures publishing of [dokkaKotlinJar] and [dokkaJavaJar] artifacts,
-     * containing Dokka-generated documentation.
-     *
-     * By default, publishing of the [dokkaKotlinJar] artifact is enabled, and [dokkaJavaJar]
-     * is disabled.
-     *
-     * Remember that the Dokka Gradle plugin should be applied to publish this artifact as it is
-     * produced by the `dokkaHtml` task. It can be done by using the
-     * [io.spine.dependency.build.Dokka] dependency object or by applying the
-     * `buildSrc/src/main/kotlin/dokka-for-kotlin` or
-     * `buildSrc/src/main/kotlin/dokka-for-java` script plugins.
-     *
-     * Here's an example of how to use this option:
-     *
-     * ```
-     * spinePublishing {
-     *     dokkaJar {
-     *         kotlin = false
-     *         java = true
-     *     }
-     * }
-     * ```
-     *
-     * The resulting artifact is available under "dokka" classifier.
-     */
-    fun dokkaJar(block: DokkaJar.() -> Unit) = dokkaJar.run(block)
-
-    /**
      * Called to notify the extension that its configuration is completed.
      *
      * On this stage the extension will validate the received configuration and set up
      * `maven-publish` plugin for each published module.
      */
     internal fun configured() {
-        ensureProtoJarExclusionsArePublished()
         ensureTestJarInclusionsArePublished()
         ensureModulesNotDuplicated()
         ensureCustomPublishingNotMisused()
 
         val projectsToPublish = projectsToPublish()
         projectsToPublish.forEach { project ->
-            val jarFlags = JarFlags.create(project.name, protoJar, testJar, dokkaJar)
+            val jarFlags = JarFlags.create(project.name, testJar)
             project.setUpPublishing(jarFlags)
         }
     }
@@ -345,13 +350,14 @@ open class SpinePublishing(private val project: Project) {
      *
      * @see modules
      */
-    private fun projectsToPublish(): Collection<Project> {
+    fun projectsToPublish(): Set<Project> {
         if (project.subprojects.isEmpty()) {
             return setOf(project)
         }
         return modules.union(modulesWithCustomPublishing)
             .map { name -> project.project(name) }
             .ifEmpty { setOf(project) }
+            .toSet()
     }
 
     /**
@@ -359,7 +365,7 @@ open class SpinePublishing(private val project: Project) {
      *
      * Firstly, an instance of [PublicationHandler] is created for the project depending
      * on the nature of the publication process configured.
-     * Then, this the handler is scheduled to apply on [Project.afterEvaluate].
+     * Then, the handler is scheduled to apply on [Project.afterEvaluate].
      *
      * General rule of thumb is to avoid using [Project.afterEvaluate] of this closure,
      * as it configures a project when its configuration is considered completed.
@@ -367,21 +373,22 @@ open class SpinePublishing(private val project: Project) {
      *
      * We selected to use [Project.afterEvaluate] so that we can configure publishing of multiple
      * modules from a root project. When we do this, we configure publishing for a module,
-     * build file of which has not been even evaluated yet.
+     * a build file of which has not been even evaluated yet.
      *
      * The simplest example here is specifying of `version` and `group` for Maven coordinates.
-     * Let's suppose, they are declared in a module's build file. It is a common practice.
-     * But publishing of the module is configured from a root project's build file. By the time,
-     * when we need to specify them, we just don't know them. As a result, we have to use
-     * [Project.afterEvaluate] in order to guarantee that a module will be configured by the time
-     * we configure publishing for it.
+     * Let's suppose they are declared in a module's build file. It is a common practice.
+     * But publishing of the module is configured from a root project's build file.
+     * By the time when we need to specify them, we just don't know them.
+     * As a result, we have to use [Project.afterEvaluate] in order to guarantee that
+     * the module will be configured by the time we configure publishing for it.
      */
     private fun Project.setUpPublishing(jarFlags: JarFlags) {
         val customPublishing = modulesWithCustomPublishing.contains(name) || customPublishing
+        val destinations = project.publishTo()
         val handler = if (customPublishing) {
-            CustomPublicationHandler(project, destinations)
+            CustomPublicationHandler.serving(project, destinations)
         } else {
-            StandardJavaPublicationHandler(project, jarFlags, destinations)
+            StandardJavaPublicationHandler.serving(project, destinations, jarFlags)
         }
         afterEvaluate {
             handler.apply()
@@ -389,27 +396,52 @@ open class SpinePublishing(private val project: Project) {
     }
 
     /**
-     * Obtains an artifact ID for the given project.
+     * Obtains the set of repositories for publishing.
      *
-     * It consists of a project's name and [prefix][artifactPrefix]:
-     * `<artifactPrefix><project.name>`.
+     * If there is a local instance of [io.spine.gradle.publish.SpinePublishing] extension,
+     * the [destinations] are obtained from this instance.
+     * Otherwise, the function attempts to obtain it from a [parent project][Project.getParent].
+     * If there is no parent project, an empty set is returned.
+     *
+     * The normal execution should end up at the root project of a multi-module project
+     * if there are no custom destinations specified by the local extension.
      */
-    fun artifactId(project: Project): String = "$artifactPrefix${project.name}"
+    private fun Project.publishTo(): Set<Repository> {
+        val ext = localSpinePublishing
+        if (ext != null && ext::destinations.isInitialized) {
+            return destinations
+        }
+        return parent?.publishTo() ?: emptySet()
+    }
 
     /**
-     * Ensures that all modules, marked as excluded from [protoJar] publishing,
-     * are actually published.
+     * Obtains an artifact ID for the given project.
      *
-     * It makes no sense to tell a module don't publish [protoJar] artifact, if the module is not
-     * published at all.
+     * @see artifactPrefix
+     * @see toolArtifactPrefix
      */
-    private fun ensureProtoJarExclusionsArePublished() {
-        val nonPublishedExclusions = protoJar.exclusions.minus(modules)
-        if (nonPublishedExclusions.isNotEmpty()) {
-            throw IllegalStateException("One or more modules are marked as `excluded from proto " +
-                    "JAR publication`, but they are not even published: $nonPublishedExclusions")
+    fun artifactId(project: Project): String {
+        val result = if (project.isTool) {
+            check(!toolArtifactPrefix.isEmpty()) {
+                "Artifact prefix cannot be empty for tool modules. " +
+                        "Please set the `toolArtifactPrefix` property in `spinePublishing`. " +
+                        "Use `\"NONE\"` to have an empty prefix for tool modules."
+            }
+            val prefix =
+                if (toolArtifactPrefix == NONE_PREFIX) {
+                    ""
+                } else {
+                    toolArtifactPrefix
+                }
+            "$prefix${project.name}"
+        } else {
+            "$artifactPrefix${project.name}"
         }
+        return result
     }
+
+    private val Project.isTool: Boolean
+        get() = group == Spine.toolsGroup
 
     /**
      * Ensures that all modules, marked as included into [testJar] publishing,
@@ -431,7 +463,7 @@ open class SpinePublishing(private val project: Project) {
     /**
      * Ensures that publishing of a module is configured only from a single place.
      *
-     * We allow configuration of publishing from two places - a root project and module itself.
+     * We allow configuration of publishing from two places - a root project and the module itself.
      * Here we verify that publishing of a module is not configured in both places simultaneously.
      */
     private fun ensureModulesNotDuplicated() {

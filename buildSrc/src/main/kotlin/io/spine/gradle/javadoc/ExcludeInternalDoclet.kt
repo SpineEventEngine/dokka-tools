@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@
 
 package io.spine.gradle.javadoc
 
-import io.spine.dependency.local.ArtifactVersion
-import io.spine.dependency.local.Spine
+import io.spine.dependency.local.ToolBase
+import io.spine.gradle.SpineTaskGroup
 import io.spine.gradle.javadoc.ExcludeInternalDoclet.Companion.taskName
 import io.spine.gradle.sourceSets
 import org.gradle.api.Project
@@ -36,15 +36,12 @@ import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
 
 /**
- * The doclet which removes Javadoc for `@Internal` things in the Java code.
+ * The doclet that removes Javadoc for `@Internal` things in the Java code.
  */
 @Suppress("ConstPropertyName")
-class ExcludeInternalDoclet(
-    @Deprecated("`Spine.ArtifactVersion.javadocTools` is used instead.")
-    val version: String = ArtifactVersion.javadocTools
-) {
+class ExcludeInternalDoclet {
 
-    private val dependency = Spine.javadocFilter
+    private val dependency = ToolBase.JavadocFilter.artifact
 
     companion object {
 
@@ -55,12 +52,12 @@ class ExcludeInternalDoclet(
         private const val configurationName = "excludeInternalDoclet"
 
         /**
-         * The fully-qualified class name of the doclet.
+         * The fully qualified class name of the doclet.
          */
         const val className = "io.spine.tools.javadoc.ExcludeInternalDoclet"
 
         /**
-         * The name of the helper task which configures the Javadoc processing
+         * The name of the helper task that configures the Javadoc processing
          * to exclude `@Internal` types.
          */
         const val taskName = "noInternalJavadoc"
@@ -71,7 +68,7 @@ class ExcludeInternalDoclet(
     }
 
     /**
-     * Creates a custom Javadoc task for the [project] which excludes the types
+     * Creates a custom Javadoc task for the [project] that excludes the types
      * annotated as `@Internal`.
      *
      * The task is registered under [taskName].
@@ -96,6 +93,9 @@ class ExcludeInternalDoclet(
 private fun Project.appendCustomJavadocTask(excludeInternalDoclet: Configuration) {
     val javadocTask = tasks.javadocTask()
     tasks.register(taskName, Javadoc::class.java) {
+
+        group = SpineTaskGroup.name
+        description = "Generates Javadoc that omits `@Internal` Java APIs"
 
         source = sourceSets.getByName("main").allJava.filter {
             !it.absolutePath.contains("generated")

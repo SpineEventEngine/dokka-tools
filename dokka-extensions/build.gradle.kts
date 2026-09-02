@@ -32,7 +32,11 @@ plugins {
 }
 
 dependencies {
-    implementation(Base.lib)
+    // Only `io.spine.annotation.Internal` is used, and it lives in
+    // `spine-annotations`. Depending on the whole `spine-base` put that
+    // library into this plugin's runtime POM, where every consumer's Dokka
+    // classpath then had to resolve it.
+    implementation(Base.annotations)
     implementation(Dokka.BasePlugin.lib)
 
     compileOnly(Dokka.CorePlugin.lib)
