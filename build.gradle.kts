@@ -44,6 +44,7 @@ import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.report.coverage.KoverConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.repo.standardToSpineSdk
@@ -62,7 +63,6 @@ plugins {
 allprojects {
     apply(plugin = Dokka.GradlePlugin.id)
     apply {
-        plugin("jacoco")
         plugin("idea")
         plugin("project-report")
         from("$rootDir/version.gradle.kts")
@@ -92,7 +92,6 @@ subprojects {
         plugin("kotlin")
         plugin("maven-publish")
         plugin("net.ltgt.errorprone")
-        plugin("jacoco")
         plugin("pmd")
         plugin("pmd-settings")
 
@@ -165,6 +164,9 @@ subprojects {
         }
     }
 }
+
+// Kover must be applied while the project is still configurable.
+KoverConfig.applyTo(project)
 
 PomGenerator.applyTo(project)
 LicenseReporter.mergeAllReports(project)
