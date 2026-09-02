@@ -34,6 +34,7 @@ import io.spine.dependency.lib.JavaX
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.local.Logging
 import io.spine.dependency.test.JUnit
+import io.spine.dependency.test.Kover
 import io.spine.dependency.test.Kotest
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.javac.configureErrorProne
@@ -90,6 +91,10 @@ subprojects {
     apply {
         plugin("java-library")
         plugin("kotlin")
+        // Coverage reaches the root rollup only from subprojects that apply
+        // Kover themselves; this repository does not use the `jvm-module`
+        // convention, which would otherwise do it.
+        plugin(Kover.id)
         plugin("maven-publish")
         plugin("net.ltgt.errorprone")
         plugin("pmd")
