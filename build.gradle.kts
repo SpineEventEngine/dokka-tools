@@ -26,6 +26,7 @@
 
 import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.build.CheckerFramework
+import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.kotlinx.Coroutines
 import io.spine.dependency.lib.Guava
@@ -59,6 +60,7 @@ plugins {
 }
 
 allprojects {
+    apply(plugin = Dokka.GradlePlugin.id)
     apply {
         plugin("jacoco")
         plugin("idea")
