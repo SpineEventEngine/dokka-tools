@@ -32,6 +32,7 @@ import io.spine.dependency.kotlinx.Coroutines
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.JavaX
 import io.spine.dependency.lib.Kotlin
+import io.spine.dependency.local.Base
 import io.spine.dependency.local.Logging
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Kover
@@ -62,8 +63,11 @@ plugins {
 }
 
 allprojects {
-    apply(plugin = Dokka.GradlePlugin.id)
     apply {
+        // Applies the Dokka plugin together with its Javadoc format.
+        // Publishing depends on `dokkaGeneratePublicationJavadoc`, which only
+        // the Javadoc format registers.
+        plugin("dokka-setup")
         plugin("idea")
         plugin("project-report")
         from("$rootDir/version.gradle.kts")
@@ -146,6 +150,11 @@ subprojects {
                 // cannot choose between them.
                 Kotlin.StdLib.forceArtifacts(project, this@all, this@resolutionStrategy)
                 force(
+                    // The published `dokka-extensions` this project loads for
+                    // its own documentation still asks for a `spine-base` that
+                    // is no longer in the registry. Superseded once the fixed
+                    // plugin is published.
+                    Base.lib,
                     Kotlin.bom,
                     // Dokka requests an older coroutines line than the
                     // refreshed baseline; the BOM itself is a graph node
@@ -167,6 +176,16 @@ subprojects {
             configureLogging()
             useJUnitPlatform()
         }
+    }
+}
+
+// The root project documents itself too, so it loads `dokka-extensions` and
+// needs the same repair as the subprojects: the published plugin still asks
+// for a `spine-base` the registry no longer serves. `subprojects` does not
+// reach the root, so the force is repeated here.
+configurations.all {
+    resolutionStrategy {
+        force(Base.lib)
     }
 }
 
