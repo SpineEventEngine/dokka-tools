@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
  * This object provides high-level constants, like the version of JVM, to be used
  * throughout the project.
  */
-@Suppress("unused")
 object BuildSettings {
     private const val JVM_VERSION = 17
     val javaVersion: JavaLanguageVersion = JavaLanguageVersion.of(JVM_VERSION)
-    val javaVersionCompat: JavaVersion = JavaVersion.toVersion(JVM_VERSION)
+    @Suppress("unused")
+    val javaVersionCompat = JavaVersion.toVersion(JVM_VERSION)
     val jvmTarget = JvmTarget.JVM_17
     const val REMOTE_DEBUG_PORT = 5566
 }

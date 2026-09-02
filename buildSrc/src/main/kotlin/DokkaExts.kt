@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,35 +25,22 @@
  */
 
 import io.spine.dependency.build.Dokka
+import io.spine.gradle.SpineTaskGroup
 import io.spine.gradle.publish.getOrCreate
 import java.io.File
 import java.time.LocalDate
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.kotlin.dsl.DependencyHandlerScope
-import org.jetbrains.dokka.DokkaConfiguration
-import org.jetbrains.dokka.base.DokkaBase
-import org.jetbrains.dokka.base.DokkaBaseConfiguration
-import org.jetbrains.dokka.gradle.AbstractDokkaLeafTask
-import org.jetbrains.dokka.gradle.AbstractDokkaTask
-import org.jetbrains.dokka.gradle.DokkaTask
-import org.jetbrains.dokka.gradle.GradleDokkaSourceSetBuilder
-
-/**
- * To generate the documentation as seen from Java perspective, the `kotlin-as-java`
- * plugin was added to the Dokka classpath.
- *
- * @see <a href="https://github.com/Kotlin/dokka#output-formats">
- *     Dokka output formats</a>
- */
-fun DependencyHandlerScope.useDokkaForKotlinAsJava() {
-    dokkaPlugin(Dokka.KotlinAsJavaPlugin.lib)
-}
+import org.jetbrains.dokka.gradle.DokkaExtension
+import org.jetbrains.dokka.gradle.engine.parameters.DokkaSourceSetSpec
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
 
 /**
  * To exclude pieces of code annotated with `@Internal` from the documentation
@@ -69,11 +56,16 @@ fun DependencyHandlerScope.useDokkaWithSpineExtensions() {
 private fun DependencyHandler.dokkaPlugin(dependencyNotation: Any): Dependency? =
     add("dokkaPlugin", dependencyNotation)
 
-private fun Project.dokkaOutput(language: String): File {
-    val lng = language.titleCaseFirstChar()
-    return layout.buildDirectory.dir("docs/dokka$lng").get().asFile
+/**
+ * Resolves the directory where Dokka outputs HTML documentation for the given language.
+ */
+internal fun Project.dokkaHtmlOutput(): File {
+    return layout.buildDirectory.dir("dokka/html").get().asFile
 }
 
+/**
+ * Locates a Dokka configuration file under the `buildSrc` resources.
+ */
 fun Project.dokkaConfigFile(file: String): File {
     val dokkaConfDir = project.rootDir.resolve("buildSrc/src/main/resources/dokka")
     return dokkaConfDir.resolve(file)
@@ -93,117 +85,149 @@ fun Project.dokkaConfigFile(file: String): File {
  * @see <a href="https://kotlin.github.io/dokka/1.8.10/user_guide/base-specific/frontend/#prerequisites">
  *  Dokka modifying frontend assets</a>
  */
-fun AbstractDokkaTask.configureStyle() {
-    pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-        customStyleSheets = listOf(project.dokkaConfigFile("styles/custom-styles.css"))
-        customAssets = listOf(project.dokkaConfigFile("assets/logo-icon.svg"))
-        separateInheritedMembers = true
-        footerMessage = "Copyright ${LocalDate.now().year}, TeamDev"
-    }
+fun DokkaHtmlPluginParameters.configureStyle(project: Project) {
+    customAssets.from(project.dokkaConfigFile("assets/logo-icon.svg"))
+    customStyleSheets.from(project.dokkaConfigFile("styles/custom-styles.css"))
+    footerMessage.set("Copyright ${LocalDate.now().year}, TeamDev")
+    separateInheritedMembers.set(true)
+    mergeImplicitExpectActualDeclarations.set(false)
 }
 
-private fun AbstractDokkaLeafTask.configureFor(language: String) {
-    dokkaSourceSets.configureEach {
-        /**
-         * Configures links to the external Java documentation.
-         */
-        jdkVersion.set(BuildSettings.javaVersion.asInt())
+private fun DokkaExtension.configureFor(
+    project: Project,
+    language: String,
+    sourceLinkRemoteUrl: String
+) {
+    dokkaPublications.named("html").configure {
+        suppressInheritedMembers.set(true)
+        failOnWarning.set(true)
+    }
 
-        skipEmptyPackages.set(true)
+    val commonMain = "commonMain"
+    val jvmMain = "jvmMain"
 
-        includeNonPublic.set(true)
+    val commonMainDir = project.file("src/$commonMain")
+    val jvmMainDir = project.file("src/$jvmMain")
+    val isKmp = commonMainDir.exists() || jvmMainDir.exists()
 
-        documentedVisibilities.set(
-            setOf(
-                DokkaConfiguration.Visibility.PUBLIC,
-                DokkaConfiguration.Visibility.PROTECTED
+    if (isKmp) {
+        if (commonMainDir.exists()) {
+            dokkaSourceSets.named(commonMain).configure {
+                configureSourceSet(
+                    SourceSetConfig(commonMainDir, sourceLinkRemoteUrl)
+                )
+            }
+        }
+
+        if (jvmMainDir.exists()) {
+            dokkaSourceSets.named(jvmMain).configure {
+                configureSourceSet(
+                    SourceSetConfig(jvmMainDir, sourceLinkRemoteUrl, null)
+                )
+            }
+        }
+    } else {
+        dokkaSourceSets.named("main").configure {
+            configureSourceSet(
+                SourceSetConfig(
+                    sourceDir = project.file("src/main/${language.lowercase()}"),
+                    sourceLinkRemoteUrl = sourceLinkRemoteUrl,
+                )
             )
-        )
+        }
     }
 
-    outputDirectory.set(project.dokkaOutput(language))
+    pluginsConfiguration.named("html").configure { this as DokkaHtmlPluginParameters
+        configureStyle(project)
+    }
+}
 
-    configureStyle()
+private data class SourceSetConfig(
+    val sourceDir: File,
+    val sourceLinkRemoteUrl: String,
+    val moduleDoc: String? = "Module.md"
+)
+
+private fun DokkaSourceSetSpec.configureSourceSet(config: SourceSetConfig) {
+    config.moduleDoc?.let { doc ->
+        if (File(doc).exists()) {
+            this@configureSourceSet.includes.from(doc)
+        }
+    }
+
+    sourceLink {
+        localDirectory.set(config.sourceDir)
+        remoteUrl(config.sourceLinkRemoteUrl)
+        remoteLineSuffix.set(DocumentationSettings.SourceLink.lineSuffix)
+    }
+
+    jdkVersion.set(BuildSettings.javaVersion.asInt())
+    skipEmptyPackages.set(true)
+
+    documentedVisibilities.set(
+        setOf(
+            VisibilityModifier.Public,
+            VisibilityModifier.Protected
+        )
+    )
 }
 
 /**
- * Configures this [DokkaTask] to accept only Kotlin files.
+ * Configures this [DokkaExtension] to accept only Kotlin files.
  */
-fun AbstractDokkaLeafTask.configureForKotlin() {
-    configureFor("kotlin")
+fun DokkaExtension.configureForKotlin(project: Project, sourceLinkRemoteUrl: String) {
+    configureFor(project, "kotlin", sourceLinkRemoteUrl)
 }
 
 /**
- * Configures this [DokkaTask] to accept only Java files.
- */
-fun AbstractDokkaLeafTask.configureForJava() {
-    configureFor("java")
-}
-
-/**
- * Finds the `dokkaHtml` Gradle task.
- */
-fun TaskContainer.dokkaHtmlTask(): DokkaTask? = this.findByName("dokkaHtml") as DokkaTask?
-
-/**
- * Returns only Java source roots out of all present in the source set.
- *
- * It is a helper method for generating documentation by Dokka only for Java code.
- * It is helpful when both Java and Kotlin source files are present in a source set.
- * Dokka can properly generate documentation for either Kotlin or Java depending on
- * the configuration, but not both.
+ * Configures this [DokkaExtension] to accept only Java files.
  */
 @Suppress("unused")
-internal fun GradleDokkaSourceSetBuilder.onlyJavaSources(): FileCollection {
-    return sourceRoots.filter(File::isJavaSourceDirectory)
-}
-
-private fun File.isJavaSourceDirectory(): Boolean {
-    return isDirectory && name == "java"
+fun DokkaExtension.configureForJava(project: Project, sourceLinkRemoteUrl: String) {
+    configureFor(project, "java", sourceLinkRemoteUrl)
 }
 
 /**
- * Locates or creates `dokkaKotlinJar` task in this [Project].
+ * Finds the `dokkaGenerateHtml` Gradle task.
+ */
+fun TaskContainer.dokkaHtmlTask(): Task? = this.findByName("dokkaGeneratePublicationHtml")
+
+/**
+ * Finds the `dokkaGeneratePublicationJavadoc` Gradle task.
+ */
+fun TaskContainer.dokkaJavadocTask(): Task? = this.findByName("dokkaGeneratePublicationJavadoc")
+
+/**
+ * Locates or creates the `htmlDocsJar` task in this [Project].
  *
  * The output of this task is a `jar` archive. The archive contains the Dokka output, generated upon
- * Kotlin sources from `main` source set. Requires Dokka to be configured in the target project by
- * applying `dokka-for-kotlin` plugin.
+ * Kotlin sources from the `main` source set. Requires Dokka to be configured in the target project by
+ * applying the `dokka-setup` plugin.
  */
-fun Project.dokkaKotlinJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaKotlinJar") {
-    archiveClassifier.set("dokka")
-    from(files(dokkaOutput("kotlin")))
+fun Project.htmlDocsJar(): TaskProvider<Jar> = tasks.getOrCreate("htmlDocsJar") {
+    group = SpineTaskGroup.name
+    description = "Assembles a JAR with generated Dokka HTML docs"
+    archiveClassifier.set("html-docs")
+    from(files(dokkaHtmlOutput()))
 
-    tasks.dokkaHtmlTask()?.let{ dokkaTask ->
+    tasks.dokkaHtmlTask()?.let { dokkaTask ->
         this@getOrCreate.dependsOn(dokkaTask)
     }
 }
 
 /**
- * Tells if this task belongs to the execution graph which contains publishing tasks.
+ * Tells if this task belongs to the execution graph that contains
+ * the `publish` and `dokkaGenerate` tasks.
  *
- * The task `"publishToMavenLocal"` is excluded from the check because it is a part of
- * the local testing workflow.
+ * This predicate could be useful for disabling publishing tasks
+ * when doing, e.g., `publishToMavenLocal` for the purpose of the
+ * integration tests that (of course) do not test the documentation
+ * generation process and its results.
  */
-fun AbstractDokkaTask.isInPublishingGraph(): Boolean =
+fun Task.isInPublishingGraph(): Boolean =
     project.gradle.taskGraph.allTasks.any {
-        it.name == "publish"
+        it.name == "publish" || it.name.contains("dokkaGenerate")
     }
-
-/**
- * Locates or creates `dokkaJavaJar` task in this [Project].
- *
- * The output of this task is a `jar` archive. The archive contains the Dokka output, generated upon
- * Kotlin sources from `main` source set. Requires Dokka to be configured in the target project by
- * applying `dokka-for-java` and/or `dokka-for-kotlin` script plugin.
- */
-fun Project.dokkaJavaJar(): TaskProvider<Jar> = tasks.getOrCreate("dokkaJavaJar") {
-    archiveClassifier.set("dokka-java")
-    from(files(dokkaOutput("java")))
-
-    tasks.dokkaHtmlTask()?.let{ dokkaTask ->
-        this@getOrCreate.dependsOn(dokkaTask)
-    }
-}
 
 /**
  * Disables Dokka and Javadoc tasks in this `Project`.

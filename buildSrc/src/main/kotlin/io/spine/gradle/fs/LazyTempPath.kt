@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,16 @@ import java.nio.file.WatchService
  *
  * After the first usage, the instances of this type delegate all calls to the internally
  * created instance of [Path] created with [createTempDirectory].
+ *
+ * The directory is created under the [shared base directory][SpineTempDir], which is removed
+ * when the JVM — the Gradle daemon — shuts down. Build tasks delete their own directories
+ * eagerly as the primary cleanup; this shutdown removal is a safety net, so a directory does
+ * not outlive the daemon even when a build fails before its eager cleanup runs.
  */
 @Suppress("TooManyFunctions")
 class LazyTempPath(private val prefix: String) : Path {
 
-    private val delegate: Path by lazy { createTempDirectory(prefix) }
+    private val delegate: Path by lazy { createTempDirectory(SpineTempDir.path, prefix) }
 
     override fun compareTo(other: Path): Int = delegate.compareTo(other)
 
@@ -57,7 +62,7 @@ class LazyTempPath(private val prefix: String) : Path {
         vararg modifiers: WatchEvent.Modifier?
     ): WatchKey = delegate.register(watcher, events, *modifiers)
 
-    override fun register(watcher: WatchService, vararg events: WatchEvent.Kind<*>?): WatchKey =
+    override fun register(watcher: WatchService, vararg events: WatchEvent.Kind<*>): WatchKey =
         delegate.register(watcher, *events)
 
     override fun getFileSystem(): FileSystem = delegate.fileSystem
@@ -101,7 +106,7 @@ class LazyTempPath(private val prefix: String) : Path {
 
     override fun toAbsolutePath(): Path = delegate.toAbsolutePath()
 
-    override fun toRealPath(vararg options: LinkOption?): Path = delegate.toRealPath(*options)
+    override fun toRealPath(vararg options: LinkOption): Path = delegate.toRealPath(*options)
 
     override fun toFile(): File = delegate.toFile()
 

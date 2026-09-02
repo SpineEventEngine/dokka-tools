@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 package io.spine.gradle.dart.task
 
+import io.spine.gradle.SpineTaskGroup
 import io.spine.gradle.TaskName
 import io.spine.gradle.named
 import io.spine.gradle.register
@@ -36,11 +37,11 @@ import org.gradle.api.tasks.TaskProvider
 private val integrationTestName = TaskName.of("integrationTest", Exec::class)
 
 /**
- * Locates `integrationTest` task in this [TaskContainer].
+ * Locates the `integrationTest` task in this [TaskContainer].
  *
  * The task runs integration tests of the `spine-dart` library against a sample
- * Spine-based application. The tests are run in Chrome browser because they use `WebFirebaseClient`
- * which only works in web environment.
+ * Spine-based application. The tests are run in the Chrome browser because they use `WebFirebaseClient`
+ * that only works in a web environment.
  *
  * A sample Spine-based application is run from the `test-app` module before integration
  * tests start and is stopped as the tests complete.
@@ -49,7 +50,7 @@ val TaskContainer.integrationTest: TaskProvider<Exec>
     get() = named(integrationTestName)
 
 /**
- * Registers [TaskContainer.integrationTest] task.
+ * Registers the [TaskContainer.integrationTest] task.
  *
  * Please note, this task depends on [build] tasks. Therefore, building tasks should be applied in
  * the first place.
@@ -74,6 +75,9 @@ val TaskContainer.integrationTest: TaskProvider<Exec>
 @Suppress("unused")
 fun DartTasks.integrationTest() =
     register(integrationTestName) {
+
+        group = SpineTaskGroup.name
+        description = "Runs integration tests of `spine-dart` against a sample application"
 
         dependsOn(
             resolveDependencies,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import org.gradle.kotlin.dsl.findByType
 
 /**
  * Configures [JsExtension] that facilitates configuration of Gradle tasks and plugins
- * to build JavaScripts projects.
+ * to build JavaScript projects.
  *
  * The whole structure of the extension looks as follows:
  *
@@ -70,7 +70,7 @@ import org.gradle.kotlin.dsl.findByType
  * There are two ways to modify the environment:
  *
  *  1. Update [JsEnvironment] directly. Go with this option when it is a global change
- *     that should affect all projects which use this extension.
+ *     that should affect all projects that use this extension.
  *  2. Use [JsExtension.environment] scope — for temporary and custom overridings.
  *
  * An example of a property overriding:
@@ -83,7 +83,7 @@ import org.gradle.kotlin.dsl.findByType
  * }
  * ```
  *
- * Please note, environment should be set up firstly to have the effect on the parts
+ * Please note, the environment should be set up firstly to have the effect on the parts
  * of the extension that use it.
  *
  * ### Tasks and Plugins
@@ -93,8 +93,8 @@ import org.gradle.kotlin.dsl.findByType
  * named after a task it registers or a task group if several tasks are registered at once.
  * Then this extension is called in a project's `build.gradle.kts`.
  *
- * `JsTasks` and `JsPlugins` scopes extend [JsContext] which provides access
- * to the current [JsEnvironment] and shortcuts for running `npm` tool.
+ * `JsTasks` and `JsPlugins` scopes extend [JsContext] that provides access
+ * to the current [JsEnvironment] and shortcuts for running the `npm` tool.
  *
  * Below is the simplest example of how to create a primitive `printNpmVersion` task.
  *
@@ -173,7 +173,7 @@ open class JsExtension(internal val project: Project) {
     /**
      * Overrides default values of [JsEnvironment].
      *
-     * Please note, environment should be set up firstly to have the effect on the parts
+     * Please note, the environment should be set up firstly to have the effect on the parts
      * of the extension that use it.
      */
     fun environment(overridings: ConfigurableJsEnvironment.() -> Unit) =

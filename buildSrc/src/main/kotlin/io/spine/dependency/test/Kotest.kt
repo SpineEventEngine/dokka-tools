@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,26 +35,23 @@ package io.spine.dependency.test
  */
 @Suppress("unused", "ConstPropertyName")
 object Kotest {
-    const val version = "5.9.1"
+    const val version = "6.2.4"
     const val group = "io.kotest"
+    const val gradlePluginId = "io.kotest"
     const val assertions = "$group:kotest-assertions-core:$version"
     const val runnerJUnit5 = "$group:kotest-runner-junit5:$version"
     const val runnerJUnit5Jvm = "$group:kotest-runner-junit5-jvm:$version"
-    const val frameworkApi = "$group:kotest-framework-api:$version"
-    const val datatest = "$group:kotest-framework-datatest:$version"
     const val frameworkEngine = "$group:kotest-framework-engine:$version"
+    const val common = "$group:kotest-common:$version"
 
-    // https://plugins.gradle.org/plugin/io.kotest.multiplatform
-    object MultiplatformGradlePlugin {
-        const val version = Kotest.version
-        const val id = "io.kotest.multiplatform"
-        const val classpath = "$group:kotest-framework-multiplatform-plugin-gradle:$version"
-    }
-
-    // https://github.com/kotest/kotest-gradle-plugin
-    object JvmGradlePlugin {
-        const val version = "0.4.10"
-        const val id = "io.kotest"
-        const val classpath = "$group:kotest-gradle-plugin:$version"
-    }
+    /**
+     * @deprecated Use `frameworkEngine` instead.
+     */
+    @Deprecated("Use `frameworkEngine` instead.", ReplaceWith("frameworkEngine"))
+    const val frameworkApi = "$group:kotest-framework-api:$version"
+    /**
+     * @deprecated The dependency was merged into the core framework.
+     */
+    @Deprecated("The dependency was merged into the core framework.")
+    const val datatest = "$group:kotest-framework-datatest:$version"
 }

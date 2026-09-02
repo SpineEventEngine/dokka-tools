@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ package io.spine.dependency.local
  */
 @Suppress("ConstPropertyName")
 object TestLib {
-    const val version = "2.0.0-SNAPSHOT.185"
+    const val version = "2.0.0-SNAPSHOT.213"
     const val group = Spine.toolsGroup
-    const val artifact = "spine-testlib"
+    const val artifact = "base-testlib"
     const val lib = "$group:$artifact:$version"
 }

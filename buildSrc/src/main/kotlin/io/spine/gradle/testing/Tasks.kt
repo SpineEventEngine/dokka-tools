@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,11 @@
 
 package io.spine.gradle.testing
 
+import io.spine.gradle.SpineTaskGroup
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.withType
 
 /**
  * Registers [slowTest][SlowTest] and [fastTest][FastTest] tasks in this [TaskContainer].
@@ -45,10 +47,10 @@ import org.gradle.kotlin.dsl.register
  */
 @Suppress("unused")
 fun TaskContainer.registerTestTasks() {
-    withType(Test::class.java).configureEach {
+    withType<Test>().configureEach {
         filter {
-            // There could be cases with no matching tests. E.g. tests could be based on Kotest,
-            // which has custom task types and names.
+            // There could be cases with no matching tests.
+            // E.g., tests could be based on Kotest, which has custom task types and names.
             isFailOnNoMatchingTests = false
             includeTestsMatching("*Test")
             includeTestsMatching("*Spec")
@@ -78,7 +80,7 @@ private const val SLOW_TAG = "slow"
 private abstract class FastTest : Test() {
     init {
         description = "Executes all JUnit tests but the ones tagged as `slow`."
-        group = "Verification"
+        group = SpineTaskGroup.name
 
         this.useJUnitPlatform {
             excludeTags(SLOW_TAG)
@@ -92,7 +94,7 @@ private abstract class FastTest : Test() {
 private abstract class SlowTest : Test() {
     init {
         description = "Executes JUnit tests tagged as `slow`."
-        group = "Verification"
+        group = SpineTaskGroup.name
         // No slow tests -- no problem.
         filter.isFailOnNoMatchingTests = false
         this.useJUnitPlatform {
