@@ -229,7 +229,7 @@ internal class NoteTagsPluginSpec :
     }
 
     @Test
-    fun `render notes of a Kotlin object, property, and type alias`() {
+    fun `render notes of a Kotlin object, property, and generic type alias`() {
         testInline(
             """
             |/src/main/kotlin/sample/Registry.kt
@@ -251,11 +251,11 @@ internal class NoteTagsPluginSpec :
             |}
             |
             |/**
-            | * Names of codecs.
+            | * Names of codecs by their types.
             | *
             | * @implNote Kept sorted.
             | */
-            |public typealias Names = List<String>
+            |public typealias Names<T> = Map<T, String>
             """,
             configuration
         ) {
@@ -272,7 +272,7 @@ internal class NoteTagsPluginSpec :
                     )
                 module.packages.flatMap { it.typealiases }.single { it.name == "Names" }
                     .descriptionBlocks() shouldContainExactly listOf(
-                        "Names of codecs.",
+                        "Names of codecs by their types.",
                         "Implementation Note: Kept sorted."
                     )
             }

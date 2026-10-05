@@ -153,6 +153,46 @@ internal class NoteTagSpec {
         }
 
         @Test
+        fun `custom doc tags with other names serve as blocks`() {
+            val descriptionRoot =
+                CustomDocTag(listOf(paragraph("Packs messages.")), name = "custom")
+            val noteRoot = CustomDocTag(listOf(paragraph("Uses a cache.")), name = "custom")
+            val docs = DocumentationNode(
+                listOf(Description(descriptionRoot), CustomTagWrapper(noteRoot, "implNote"))
+            )
+            docs.withNotesInDescription() shouldBe DocumentationNode(
+                listOf(
+                    Description(
+                        root(descriptionRoot, P(listOf(title("Implementation Note"))), noteRoot)
+                    )
+                )
+            )
+        }
+
+        @Test
+        fun `other custom tags stay where they are`() {
+            val suppress = CustomTagWrapper(root(), "suppress")
+            val docs = DocumentationNode(
+                listOf(
+                    Description(root(paragraph("Packs messages."))),
+                    suppress,
+                    note("implNote", paragraph("Uses a cache."))
+                )
+            )
+            docs.withNotesInDescription() shouldBe DocumentationNode(
+                listOf(
+                    Description(
+                        root(
+                            paragraph("Packs messages."),
+                            titled("Implementation Note", Text("Uses a cache."))
+                        )
+                    ),
+                    suppress
+                )
+            )
+        }
+
+        @Test
         fun `notes without content are dropped`() {
             val description = Description(root(paragraph("Packs messages.")))
             val docs = DocumentationNode(listOf(description, note("implNote")))
