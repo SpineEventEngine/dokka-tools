@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine.tools</groupId>
 <artifactId>dokka-tools</artifactId>
-<version>2.0.0-SNAPSHOT.9</version>
+<version>2.0.0-SNAPSHOT.10</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -26,7 +26,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-annotations</artifactId>
-    <version>2.0.0-SNAPSHOT.441</version>
+    <version>2.0.0-SNAPSHOT.442</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -56,7 +56,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.errorprone</groupId>
     <artifactId>error_prone_annotations</artifactId>
-    <version>2.47.0</version>
+    <version>2.42.0</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -93,6 +93,24 @@ all modules and does not describe the project structure per-subproject.
     <groupId>io.kotest</groupId>
     <artifactId>kotest-assertions-core</artifactId>
     <version>6.2.4</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.dokka</groupId>
+    <artifactId>analysis-kotlin-symbols</artifactId>
+    <version>2.2.0</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.dokka</groupId>
+    <artifactId>dokka-base-test-utils</artifactId>
+    <version>2.2.0</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.jetbrains.dokka</groupId>
+    <artifactId>dokka-test-api</artifactId>
+    <version>2.2.0</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -142,8 +160,8 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>io.spine.tools</groupId>
-    <artifactId>spine-dokka-extensions</artifactId>
-    <version>2.0.0-SNAPSHOT.7</version>
+    <artifactId>dokka-extensions</artifactId>
+    <version>2.0.0-SNAPSHOT.10</version>
   </dependency>
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>
@@ -168,11 +186,6 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.jetbrains.dokka</groupId>
     <artifactId>all-modules-page-plugin</artifactId>
-    <version>2.2.0</version>
-  </dependency>
-  <dependency>
-    <groupId>org.jetbrains.dokka</groupId>
-    <artifactId>analysis-kotlin-symbols</artifactId>
     <version>2.2.0</version>
   </dependency>
   <dependency>
