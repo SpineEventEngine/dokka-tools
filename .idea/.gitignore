@@ -16,7 +16,6 @@
 /shelf
 
 # Do not ignore the following IDEA settings
-!/misc.xml
 !/codeStyleSettings.xml
 !/codeStyles/
 !/copyright/

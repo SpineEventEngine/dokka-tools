@@ -1,1 +1,2 @@
 io.spine.tools.dokka.plugin.ExcludeInternalPlugin
+io.spine.tools.dokka.plugin.NoteTagsPlugin
