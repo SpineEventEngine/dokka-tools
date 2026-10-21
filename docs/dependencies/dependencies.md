@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine.tools:dokka-extensions:2.0.0-SNAPSHOT.11`
+# Dependencies of `io.spine.tools:dokka-extensions:2.0.0-SNAPSHOT.12`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.15.3.
@@ -200,12 +200,12 @@
      * **License:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava. **Version** : 33.7.1-jre.
+1.  **Group** : com.google.guava. **Name** : guava. **Version** : 33.7.2-jre.
      * **Project URL:** [https://github.com/google/guava](https://github.com/google/guava)
      * **License:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 33.7.1-jre.
+1.  **Group** : com.google.guava. **Name** : guava-testlib. **Version** : 33.7.2-jre.
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.guava. **Name** : listenablefuture. **Version** : 9999.0-empty-to-avoid-conflict-with-guava.
@@ -215,26 +215,21 @@
      * **Project URL:** [https://github.com/google/j2objc/](https://github.com/google/j2objc/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protobuf-java. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.puppycrawl.tools. **Name** : checkstyle. **Version** : 10.12.1.
+1.  **Group** : com.puppycrawl.tools. **Name** : checkstyle. **Version** : 12.3.1.
      * **Project URL:** [https://checkstyle.org/](https://checkstyle.org/)
-     * **License:** [LGPL-2.1+](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt)
+     * **License:** [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt)
 
 1.  **Group** : com.soywiz.korlibs.korte. **Name** : korte-jvm. **Version** : 4.0.10.
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : commons-beanutils. **Name** : commons-beanutils. **Version** : 1.9.4.
-     * **Project URL:** [https://commons.apache.org/proper/commons-beanutils/](https://commons.apache.org/proper/commons-beanutils/)
-     * **License:** [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : commons-codec. **Name** : commons-codec. **Version** : 1.22.1.
-     * **Project URL:** [https://commons.apache.org/proper/commons-codec/](https://commons.apache.org/proper/commons-codec/)
+1.  **Group** : commons-beanutils. **Name** : commons-beanutils. **Version** : 1.11.0.
+     * **Project URL:** [https://commons.apache.org/proper/commons-beanutils](https://commons.apache.org/proper/commons-beanutils)
      * **License:** [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -251,7 +246,7 @@
      * **Project URL:** [https://github.com/drewhamilton/Poko](https://github.com/drewhamilton/Poko)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : info.picocli. **Name** : picocli. **Version** : 4.7.4.
+1.  **Group** : info.picocli. **Name** : picocli. **Version** : 4.7.7.
      * **Project URL:** [https://picocli.info](https://picocli.info)
      * **License:** [The Apache Software License, version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -368,27 +363,27 @@
      * **Project URL:** [https://detekt.dev](https://detekt.dev)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
+1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.5.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-assertions-core-jvm. **Version** : 6.2.4.
+1.  **Group** : io.kotest. **Name** : kotest-assertions-core-jvm. **Version** : 6.2.5.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-assertions-shared. **Version** : 6.2.4.
+1.  **Group** : io.kotest. **Name** : kotest-assertions-shared. **Version** : 6.2.5.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-assertions-shared-jvm. **Version** : 6.2.4.
+1.  **Group** : io.kotest. **Name** : kotest-assertions-shared-jvm. **Version** : 6.2.5.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-common. **Version** : 6.2.4.
+1.  **Group** : io.kotest. **Name** : kotest-common. **Version** : 6.2.5.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.kotest. **Name** : kotest-common-jvm. **Version** : 6.2.4.
+1.  **Group** : io.kotest. **Name** : kotest-common-jvm. **Version** : 6.2.5.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -409,23 +404,18 @@
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.2.
+1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.9.
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
      * **License:** [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-ant. **Version** : 7.27.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-ant. **Version** : 7.28.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 7.27.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-core. **Version** : 7.28.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
 
-1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 7.27.0.
+1.  **Group** : net.sourceforge.pmd. **Name** : pmd-java. **Version** : 7.28.0.
      * **License:** [BSD-style](http://pmd.sourceforge.net/license.html)
-
-1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.11.1.
-     * **Project URL:** [https://www.antlr.org/](https://www.antlr.org/)
-     * **License:** [https://www.antlr.org/license.html](https://www.antlr.org/license.html)
-     * **License:** [BSD-3-Clause](https://www.antlr.org/license.html)
 
 1.  **Group** : org.antlr. **Name** : antlr4-runtime. **Version** : 4.13.2.
      * **Project URL:** [https://www.antlr.org/](https://www.antlr.org/)
@@ -437,20 +427,11 @@
      * **License:** [https://www.apache.org/licenses/LICENSE-2.0.txt](https://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.httpcomponents.client5. **Name** : httpclient5. **Version** : 5.1.3.
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : org.apache.httpcomponents.core5. **Name** : httpcore5. **Version** : 5.1.3.
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : org.apache.httpcomponents.core5. **Name** : httpcore5-h2. **Version** : 5.1.3.
-     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : org.apiguardian. **Name** : apiguardian-api. **Version** : 1.1.2.
      * **Project URL:** [https://github.com/apiguardian-team/apiguardian](https://github.com/apiguardian-team/apiguardian)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 4.2.2.
+1.  **Group** : org.checkerframework. **Name** : checker-qual. **Version** : 4.3.1.
      * **Project URL:** [https://checkerframework.org/](https://checkerframework.org/)
      * **License:** MIT
      * **License:** [The MIT License](https://opensource.org/licenses/MIT)
@@ -732,11 +713,6 @@
      * **License:** [https://jsoup.org/license](https://jsoup.org/license)
      * **License:** [The MIT License](https://jsoup.org/license)
 
-1.  **Group** : org.jspecify. **Name** : jspecify. **Version** : 1.0.0.
-     * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
-     * **License:** [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-     * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : org.jspecify. **Name** : jspecify. **Version** : 1.0.1.
      * **Project URL:** [https://jspecify.dev/](https://jspecify.dev/)
      * **License:** [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -775,19 +751,19 @@
      * **License:** The Apache License, Version 2.0
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.10.1.
+1.  **Group** : org.ow2.asm. **Name** : asm. **Version** : 9.11.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/LICENSE.txt)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.ow2.asm. **Name** : asm-commons. **Version** : 9.10.1.
+1.  **Group** : org.ow2.asm. **Name** : asm-commons. **Version** : 9.11.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/LICENSE.txt)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.ow2.asm. **Name** : asm-tree. **Version** : 9.10.1.
+1.  **Group** : org.ow2.asm. **Name** : asm-tree. **Version** : 9.11.
      * **Project URL:** [http://asm.ow2.io/](http://asm.ow2.io/)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/LICENSE.txt)
      * **License:** [BSD-3-Clause](https://asm.ow2.io/license.html)
@@ -811,14 +787,15 @@
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
+1.  **Group** : org.slf4j. **Name** : slf4j-simple. **Version** : 2.0.17.
+     * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
+     * **License:** [https://opensource.org/license/mit](https://opensource.org/license/mit)
+     * **License:** [MIT](https://opensource.org/license/mit)
+
 1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 2.7.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
      * **License:** [http://www.apache.org/licenses/LICENSE-2.0.txt](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
-     * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
-     * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.3.3.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
@@ -827,6 +804,6 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Thu Oct 15 20:12:14 WEST 2026** using 
+This report was generated on **Wed Oct 21 16:56:37 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
