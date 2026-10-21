@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine.tools</groupId>
 <artifactId>dokka-tools</artifactId>
-<version>2.0.0-SNAPSHOT.11</version>
+<version>2.0.0-SNAPSHOT.12</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -26,7 +26,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine</groupId>
     <artifactId>spine-annotations</artifactId>
-    <version>2.0.0-SNAPSHOT.461</version>
+    <version>2.0.0-SNAPSHOT.462</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -74,7 +74,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>org.checkerframework</groupId>
     <artifactId>checker-qual</artifactId>
-    <version>4.2.2</version>
+    <version>4.3.1</version>
     <scope>provided</scope>
   </dependency>
   <dependency>
@@ -86,13 +86,13 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava-testlib</artifactId>
-    <version>33.7.1-jre</version>
+    <version>33.7.2-jre</version>
     <scope>test</scope>
   </dependency>
   <dependency>
     <groupId>io.kotest</groupId>
     <artifactId>kotest-assertions-core</artifactId>
-    <version>6.2.4</version>
+    <version>6.2.5</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -151,7 +151,7 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>com.puppycrawl.tools</groupId>
     <artifactId>checkstyle</artifactId>
-    <version>10.12.1</version>
+    <version>12.3.1</version>
   </dependency>
   <dependency>
     <groupId>io.gitlab.arturbosch.detekt</groupId>
@@ -161,17 +161,17 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>dokka-extensions</artifactId>
-    <version>2.0.0-SNAPSHOT.11</version>
+    <version>2.0.0-SNAPSHOT.12</version>
   </dependency>
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-ant</artifactId>
-    <version>7.27.0</version>
+    <version>7.28.0</version>
   </dependency>
   <dependency>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-java</artifactId>
-    <version>7.27.0</version>
+    <version>7.28.0</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>
